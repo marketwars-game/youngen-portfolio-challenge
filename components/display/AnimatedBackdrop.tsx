@@ -1,15 +1,15 @@
 // FILE: components/display/AnimatedBackdrop.tsx — Shared animated backdrop (Network + Grid) for Display splash screens
-// VERSION: B19-v1 — particle network (canvas) + scrolling dot-grid + drifting glow + vignette; accent-themed per scene
-// LAST MODIFIED: 13 Jun 2026
-// HISTORY: B19-BATCH1 created — replaces static radial glows on Lobby/YearIntro/MarketOpen/Event (Rule #5 shared component)
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
 
 interface AnimatedBackdropProps {
-  accent: string;       // primary hex, e.g. '#00FFB2'
-  accent2: string;      // secondary hex, e.g. '#00D4FF'
+  accent: string;       // primary hex, e.g. 'var(--mw-violet)'
+  accent2: string;      // secondary hex, e.g. 'var(--mw-rose)'
   vignette?: boolean;   // dark edge fade (default true)
   density?: number;     // particle node count (default 18)
 }

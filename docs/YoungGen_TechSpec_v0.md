@@ -1,10 +1,17 @@
 # YoungGen Portfolio Challenge — Tech Spec
 
-**Version:** YG-V0 (MVP — โครงแรกที่วิ่งได้)
+**Version:** YG-V0 (MVP — โครงแรกที่วิ่งได้ · **DEPLOYED & VERIFIED บน Vercel**)
 **Last Updated:** 01 Jul 2026
 **งาน:** KKP YoungGen 2026 · 6–10 ก.ค. 2026 · ทีมนักเรียน ม.ปลาย (ม.4–6)
 **Fork จาก:** `market-wars @ B20-stable` (Dime! Kids Camp) — แชร์ engine/DB/routes, แตกต่างที่ content / phase flow / asset config
 **เกี่ยวข้อง:** Dime! Kids Camp ใช้ repo `market-wars` เดิม (ไม่ถูกแตะ) — คนละโปรเจกต์ อย่ารวม task tracking
+
+## Deployment (YG-V0)
+- **Repo:** https://github.com/marketwars-game/youngen-portfolio-challenge (public) · tag `YG-V0`
+- **Vercel:** project แยก (คนละอันกับ market-wars) — auto-deploy on push to `main`
+- **Supabase:** project `youngen` แยก (คนละ DB กับ Kids) — schema จาก `docs/schema.sql` (✅ verified ตรง DB จริง 100%) · ใช้ **legacy anon key** (`eyJ...`) ไม่ใช่ publishable ตัวใหม่
+- **Env (Vercel):** `NEXT_PUBLIC_SUPABASE_URL` (ไม่มี `/` ต่อท้าย) · `NEXT_PUBLIC_SUPABASE_ANON_KEY` (legacy anon) · `MC_PIN`
+- **สถานะ:** create room / join / lobby / MC เห็น player ✅ — ทำงานครบ (ยัง dry-run เต็ม 7 challenge ให้ครบก่อนวันงาน)
 
 ---
 
@@ -63,14 +70,30 @@ Ch1–4 = 6 core · Ch5 = +oil · Ch6 = +crypto, −oil · Ch7 = ครบ 8
 
 ---
 
-## Deferred → V.1 (ก่อน 6 ก.ค.)
-- allocation step 1%
-- Ch6 **lock + surprise reveal** จริง (hack $2.3B twist หลังล็อกน้ำหนัก)
-- content brief/lesson เต็มบนจอ brief + result
-- FinalRanking benchmark ghost คำนวณใหม่ให้ 8 asset / 7 challenge (ref `piggybank` ตอนนี้ no-op — ไม่พัง)
-- prize copy / debrief จบเกม
-- deploy จริง: GitHub + Vercel + Supabase แยก (ดู `docs/README_YG_V0.md`)
-- optional: filter Oil/Crypto ออกจาก EventDisplay ในรอบที่ยัง lock (ตอนนี้โชว์ 0%)
+## Pending เทียบกับ Requirement (Master Brief v3) — เช็คก่อน 6 ก.ค.
+
+### A. ยังต้องสร้าง (build to-do)
+| # | รายการจาก brief | สถานะ V.0 |
+|---|-----------------|-----------|
+| A1 | "any whole percentage" — allocation step 1% | ตอนนี้ 10% |
+| A2 | Ch6 **lock submission + surprise reveal** (hack $2.3B หลังล็อกน้ำหนัก) | simplify (เล่นเป็นรอบปกติ) |
+| A3 | content เต็มต่อ challenge: story + Real-World Reference + Teaching Focus + Lesson (บนจอ brief/result + MC script) | มี headline สั้น ยังไม่เต็ม |
+| A4 | **Day-5 debrief: 3 example portfolios** (Diversifier +20.2% / All-Cash +13.3% / Chaser −23.2% + ตารางรายปี + 4 habits) | ❌ ยังไม่มี (FinalRanking มี benchmark คนละชุด) — ดู B4 |
+| A5 | Prize screen (Top Performance Top 3) + CTA "เปิดบัญชี Dime!" ตอนจบ | ยังไม่มี |
+| A6 | FinalRanking benchmark ghost → คำนวณใหม่ 8 asset / 7 challenge (ref `piggybank` no-op) | ค้าง |
+| A7 | (optional) filter Oil/Crypto ออกจาก EventDisplay ในรอบที่ lock (ตอนนี้โชว์ 0%) | ค้าง |
+| A8 | Dry-run เต็ม 7 challenge ก่อนงาน | ยังไม่ทำ |
+
+### B. ต้องตัดสินใจกับทีม Wealth (client decisions — ยังไม่ยืนยัน)
+| # | ประเด็น | สถานะปัจจุบัน / ที่ต้องถาม |
+|---|---------|---------------------------|
+| B1 | **Ch7 "counts double"** — brief เขียนนับสองเท่า แต่ตาราง example ของเขาเอง compound แบบไม่คูณ | ตอนนี้ = rank by มูลค่าพอร์ตตรงๆ (ไม่คูณ) → ยืนยัน/เปลี่ยน |
+| B2 | **ภาษา** — EN / TH / สองภาษา | เลือก EN เพื่อความเร็ว → ยืนยันว่าไม่ต้อง TH? |
+| B3 | **MS Forms** — brief สมมติ submit ผ่าน Microsoft Form + leaderboard มือ | แอปแทนทั้งคู่อัตโนมัติ → ยืนยันใช้แอปเป็นตัวจริง? |
+| B4 | **Day-5 debrief (A4)** — ทำในแอป หรือ facilitator เล่าจากเอกสาร? | ยังไม่เคาะ |
+| B5 | **allocation step** — 1% ตาม brief เป๊ะ หรือ 5%/10% (เด็กกรอกเร็วกว่า) | ตอนนี้ 10% |
+
+> หมายเหตุ: deploy (GitHub + Vercel + Supabase แยก) — ✅ **ทำแล้ว** (ดู section Deployment)
 
 ## Convention version / tag
 ใช้ `YG-V0`, `YG-V1`, … (แยกจากสาย kids `B{n}`) สำหรับ commit/tag ทุกครั้ง
@@ -82,3 +105,16 @@ Ch1–4 = 6 core · Ch5 = +oil · Ch6 = +crypto, −oil · Ch7 = ครบ 8
 4. build verify ก่อนส่ง: `npx tsc --noEmit` + `next build`
 5. ปิด task: Task Summary + update Tech Spec + FILE_REGISTRY + commit + push + tag `YG-V{n}`
 6. **กติกากันพลาด:** สีใช้ inline style เท่านั้น (ห้าม `text-[#hex]` — purge ตอน build) · ข้อความสว่างขั้นต่ำ `rgba(255,255,255,0.65)` · CSS zoom ใช้ `useEffect+useState` · `parseFloat` ไม่ใช่ `Number()` กับ field numeric จาก Supabase
+
+## Learnings (YG-V0 deploy)
+- **schema.sql = reconstruct จากโค้ด ไม่ใช่ export จริง** → เคยตก `joined_at` (MC/play สั่ง `.order('joined_at')` แต่ผมตั้งชื่อ `created_at`) ทำให้ MC ไม่เห็น player. แก้แล้ว + เทียบ `information_schema` กับ DB จริง → `docs/schema.sql` ตรง 100% แล้ว (มี action/duel_* dormant ครบ, `duel_money_change` = numeric)
+- **Supabase API keys ใหม่:** ต้องใช้แท็บ **Legacy anon** (`eyJ...`) — โค้ดไม่รองรับ `sb_publishable_...`
+- **Vercel `NEXT_PUBLIC_*` bake ตอน build** → แก้ env แล้วต้อง **Redeploy** · URL ห้ามมี `/` ต่อท้าย (ไม่งั้น "Invalid path specified in request URL")
+- **เดโม local ใช้ DB เดิมได้** (asset id คนละชุด) · **deploy จริงใช้ DB แยก** (ต้องรัน schema.sql)
+
+---
+
+## Changelog
+| Version | วันที่ | สรุป |
+|---------|-------|------|
+| **YG-V0** | 01 ก.ค. 2026 | Fork จาก market-wars B20-stable → YoungGen Portfolio Challenge. แก้ 5 ไฟล์ (constants 8 asset + RETURN_TABLE 8×7 + ทุน 1M + 7 challenge + unlock/cap · game-engine pure allocation loop · InvestmentPanel 100% gate · play page round prop · players route เงินเริ่ม 1M). Build ผ่าน (tsc + next build 12/12). Return engine verified (all-cash = ฿1,132,683 ตรง PDF). **Deployed:** GitHub public + Vercel + Supabase `youngen` แยก. Schema verified ตรง DB จริง 100%. |

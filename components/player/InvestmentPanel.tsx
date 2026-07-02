@@ -1,10 +1,10 @@
 // FILE: components/player/InvestmentPanel.tsx — Team allocation UI (asset classes)
-// VERSION: YG-V0 — Forked from market-wars @ B15-v1
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
 //   • Renders the asset classes available THIS challenge (getAvailableAssets(round)) — progressive unlock
 //   • Per-asset cap clamp (crypto ≤ 20%)
 //   • Weights must total EXACTLY 100% before submit (no leftover-cash; Cash is its own asset)
-// LAST MODIFIED: 01 Jul 2026
-// HISTORY: market-wars B4..B15 | YG-V0 fork: available-asset filter + cap + enforce total=100
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 
 'use client';
 
@@ -157,10 +157,10 @@ export default function InvestmentPanel({
         <div className="text-center mb-4 pt-2">
           <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3"
-            style={{ background: '#00FFB220', border: '1px solid #00FFB240' }}
+            style={{ background: 'var(--mw-violet)20', border: '1px solid var(--mw-violet)40' }}
           >
             <span className="text-lg">✓</span>
-            <span className="text-sm font-mono font-bold" style={{ color: '#00FFB2' }}>
+            <span className="text-sm font-mono font-bold" style={{ color: 'var(--mw-violet)' }}>
               SUBMITTED
             </span>
           </div>
@@ -211,7 +211,7 @@ export default function InvestmentPanel({
       <div className="text-center mb-3 pt-2">
         <span
           className="text-xs font-mono tracking-wider px-3 py-1 rounded-full"
-          style={{ background: '#00D4FF15', border: '1px solid #00D4FF30', color: '#00D4FF' }}
+          style={{ background: 'var(--mw-rose)15', border: '1px solid var(--mw-rose)30', color: 'var(--mw-rose)' }}
         >
           {isRebalance ? 'REBALANCE' : 'ALLOCATION'}
         </span>
@@ -222,12 +222,12 @@ export default function InvestmentPanel({
       </div>
 
       {/* Portfolio summary bar */}
-      <div className="rounded-xl p-3 mb-3" style={{ background: '#00D4FF08', border: '1px solid #00D4FF20' }}>
+      <div className="rounded-xl p-3 mb-3" style={{ background: 'var(--mw-rose)08', border: '1px solid var(--mw-rose)20' }}>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-mono" style={{ color: '#ffffff60' }}>
             PORTFOLIO
           </span>
-          <span className="text-xs font-mono" style={{ color: isComplete ? '#00FFB2' : '#F59E0B' }}>
+          <span className="text-xs font-mono" style={{ color: isComplete ? 'var(--mw-violet)' : '#F59E0B' }}>
             {isComplete ? '✓ 100% allocated' : `${remaining}% left`}
           </span>
         </div>
@@ -334,9 +334,9 @@ export default function InvestmentPanel({
         disabled={submitting || !isComplete}
         className="w-full py-4 rounded-lg font-bold text-base tracking-wider font-mono mt-2 transition-all duration-300"
         style={{
-          background: isComplete ? 'linear-gradient(135deg, #00FFB2, #00D4FF)' : '#ffffff10',
-          color: isComplete ? '#0D1117' : '#ffffff30',
-          boxShadow: isComplete ? '0 0 30px #00FFB230' : 'none',
+          background: isComplete ? 'linear-gradient(135deg, var(--mw-violet), var(--mw-rose))' : '#ffffff10',
+          color: isComplete ? 'var(--mw-base)' : '#ffffff30',
+          boxShadow: isComplete ? '0 0 30px var(--mw-violet)30' : 'none',
           opacity: submitting ? 0.6 : 1,
         }}
       >

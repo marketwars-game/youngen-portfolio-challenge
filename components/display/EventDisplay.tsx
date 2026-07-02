@@ -1,7 +1,7 @@
 // FILE: components/display/EventDisplay.tsx — Display Event + Event Result
-// VERSION: B19-v4 — Event reveal: icon grows-and-holds big (no shrink-back); AnimatedBackdrop(red) + staggered fade; Golden Deal color inline
-// LAST MODIFIED: 13 Jun 2026
-// HISTORY: B5 created (inline) | B8R extracted | B12-UX compact layout | B15-v1 projector polish | B15-v2 dramatic event reveal + big news bar | B19-BATCH4 backdrop + reveal animation + golden deal color fix | B19 icon grow-and-hold bigger
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { COMPANIES, EVENTS, RETURN_TABLE } from '@/lib/constants';
@@ -50,7 +50,7 @@ export default function EventDisplay({ round, phase, players }: EventDisplayProp
     return (
       <div className="w-full h-full flex flex-col">
         {/* News bar — B15-v2: ใหญ่ขึ้นมาก */}
-        <div className="flex items-center gap-4 px-8 py-5 flex-shrink-0" style={{ background: '#161b22', borderBottom: '2px solid rgba(255,107,107,0.3)' }}>
+        <div className="flex items-center gap-4 px-8 py-5 flex-shrink-0" style={{ background: 'var(--mw-surface)', borderBottom: '2px solid rgba(255,107,107,0.3)' }}>
           <span className="text-4xl flex-shrink-0">{ev.emoji}</span>
           <div>
             <div className="text-2xl font-bold mb-1" style={{ color: '#FF6B6B' }}>{ev.title}</div>
@@ -66,7 +66,7 @@ export default function EventDisplay({ round, phase, players }: EventDisplayProp
               const returnPct = RETURN_TABLE[c.id]?.[round - 1] || 0;
               const isPositive = returnPct >= 0;
               return (
-                <div key={c.id} className="return-card rounded-xl p-5 text-center" style={{ animationDelay: `${i * 0.2}s`, background: '#0d1117', borderTop: `3px solid ${c.color}`, border: `1px solid rgba(255,255,255,0.06)`, borderTopColor: c.color, borderTopWidth: '3px' }}>
+                <div key={c.id} className="return-card rounded-xl p-5 text-center" style={{ animationDelay: `${i * 0.2}s`, background: 'var(--mw-base)', borderTop: `3px solid ${c.color}`, border: `1px solid rgba(255,255,255,0.06)`, borderTopColor: c.color, borderTopWidth: '3px' }}>
                   <div className="text-3xl mb-2">{c.icon}</div>
                   <div className="text-sm font-semibold mb-2" style={{ color: c.color }}>{c.name}</div>
                   <div className="text-4xl font-bold font-mono" style={{ color: isPositive ? '#22c55e' : '#ef4444' }}>

@@ -1,7 +1,7 @@
 // FILE: app/display/[roomId]/page.tsx — Display screen (shell)
-// VERSION: B16d-v2+perf-v1+B19-v5 — leaderboard rankup sync + event reveal SFX + seenFinal !loading guard (refresh re-animates); auto-replay restored (real fix in FinalPodium); ?debug=1 overlay unchanged
-// LAST MODIFIED: 13 Jun 2026
-// HISTORY: B1 created | B3 phase sync + timer | B4 submitted count | B5 event_result + results UI | B6 leaderboard | B7 final phase | B8 research quiz | B8R refactor | B9 FightDisplay | B12-UX dashboard layout | B13-BATCH3 ChanceCardDisplay + throttle | B15-v1 projector font+color polish | B15-v2 CSS zoom + header redesign + lobby redesign + QR popup + market_open dramatic | B16a-BATCH0 refactor shell (6 phase components) | B16a-BATCH1 sound: SoundGate + useDisplaySound wiring | B16b-BATCH1 invest live wall props | B16c leaderboard+results spectator SFX | B16d final 4-step + research_reveal sfx | perf-v1 debug overlay | B19 rankup SFX sync to leaderboard hold + event reveal SFX + seenFinal load guard
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -217,8 +217,8 @@ export default function DisplayScreen() {
 
   const quizSubmittedCount = players.filter((p) => (p.quiz_answered_round || 0) >= (room?.current_round || 0)).length;
 
-  if (loading) return <div className="h-screen bg-[#0D1117] flex items-center justify-center"><div className="text-4xl font-bold animate-pulse" style={{ color: '#00FFB2' }}>MARKET WARS</div></div>;
-  if (!room) return <div className="h-screen bg-[#0D1117] flex items-center justify-center"><div className="text-red-400 text-3xl">Room not found</div></div>;
+  if (loading) return <div className="h-screen bg-base flex items-center justify-center"><div className="text-4xl font-bold animate-pulse" style={{ color: 'var(--mw-violet)' }}>MARKET WARS</div></div>;
+  if (!room) return <div className="h-screen bg-base flex items-center justify-center"><div className="text-red-400 text-3xl">Room not found</div></div>;
 
   const phase = room.current_phase || 'lobby';
   const round = room.current_round || 1;
@@ -230,7 +230,7 @@ export default function DisplayScreen() {
     : true;
   const timerDuration = PHASE_TIMERS[phase] || 0;
   const timerPercent = timerDuration > 0 ? (timeLeft / timerDuration) * 100 : 0;
-  const timerColor = timeLeft <= 10 ? '#FF4444' : timeLeft <= 30 ? '#F59E0B' : '#00FFB2';
+  const timerColor = timeLeft <= 10 ? '#FF4444' : timeLeft <= 30 ? '#F59E0B' : 'var(--mw-violet)';
   const joinUrl = typeof window !== 'undefined' ? `${window.location.origin}/?room=${roomId}` : '';
   const stepProgress = getStepGroupProgress(phase);
 
@@ -239,7 +239,7 @@ export default function DisplayScreen() {
     content = <LobbyDisplay players={players} roomId={roomId} joinUrl={joinUrl} zoom={zoom} />;
   } else if (phase === 'final' || phase === 'final_podium' || phase === 'final_awards' || phase === 'final_ranking') {
     content = (
-      <div className="h-screen bg-[#0D1117] text-white" style={{ zoom }}>
+      <div className="h-screen bg-base text-white" style={{ zoom }}>
         <FinalDisplay key={`final-${replayTick}`} players={players} phase={phase as any} animate={finalAnimate} playSfx={playSfx} />
       </div>
     );
@@ -249,7 +249,7 @@ export default function DisplayScreen() {
     content = <MarketOpenDisplay round={round} zoom={zoom} />;
   } else {
     content = (
-      <div className="h-screen bg-[#0D1117] text-white flex flex-col overflow-hidden" style={{ zoom }}>
+      <div className="h-screen bg-base text-white flex flex-col overflow-hidden" style={{ zoom }}>
         <DisplayHeader steps={stepProgress} round={round} />
         <div className="flex-1 flex flex-col items-center justify-center overflow-hidden px-6 py-3">
 

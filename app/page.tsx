@@ -1,3 +1,7 @@
+// FILE: app/page.tsx — Join screen (first screen a team sees)
+// VERSION: YG-V1 — NextGen Royal re-theme + EN wording + MARKET WARS lockup (Portfolio Challenge / KKP YoungGen Edition)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme + EN + word-mark lockup
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -5,10 +9,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
 // ============================================================
-// หน้า Join Screen — หน้าแรกที่เด็กเห็น
-// เข้ามาได้ 2 ทาง:
-//   1. พิมพ์ URL ตรง → ใส่ Room Code + ชื่อ
-//   2. สแกน QR → URL มี ?room=XXXX → auto-fill Room Code
+// Join Screen — the first screen a team sees.
+// Two entry paths:
+//   1. Type the URL directly → enter Room Code + team name
+//   2. Scan the QR → URL has ?room=XXXX → auto-fills Room Code
 // ============================================================
 
 function JoinForm() {
@@ -22,7 +26,7 @@ function JoinForm() {
   const [showDuplicatePopup, setShowDuplicatePopup] = useState(false);
   const [duplicateName, setDuplicateName] = useState('');
 
-  // ถ้ามี ?room=XXXX ใน URL → auto-fill
+  // If ?room=XXXX is in the URL → auto-fill
   useEffect(() => {
     const roomFromUrl = searchParams.get('room');
     if (roomFromUrl) {
@@ -30,7 +34,7 @@ function JoinForm() {
     }
   }, [searchParams]);
 
-  // ฟังก์ชันหลัก — เรียก API join
+  // Core function — calls the join API
   const callJoinAPI = async (forceReconnect: boolean) => {
     const res = await fetch('/api/players', {
       method: 'POST',
@@ -46,7 +50,7 @@ function JoinForm() {
     return { res, data };
   };
 
-  // เข้าเกมสำเร็จ → เก็บ localStorage + redirect
+  // Joined successfully → save to localStorage + redirect
   const onJoinSuccess = (data: { player: { id: string; name: string }; room: { id: string } }) => {
     localStorage.setItem(
       `mw_player_${data.room.id}`,
@@ -65,15 +69,15 @@ function JoinForm() {
 
     // Basic validation
     if (!name.trim()) {
-      setError('ใส่ชื่อของเธอก่อนนะ!');
+      setError('Enter your team name first!');
       return;
     }
     if (!roomCode.trim()) {
-      setError('ใส่ Room Code ด้วย!');
+      setError('Enter the Room Code too!');
       return;
     }
     if (name.trim().length > 20) {
-      setError('ชื่อยาวเกินไป (ไม่เกิน 20 ตัว)');
+      setError('Name too long (max 20 characters)');
       return;
     }
 
@@ -83,12 +87,12 @@ function JoinForm() {
       const { res, data } = await callJoinAPI(false);
 
       if (!res.ok) {
-        setError(data.error || 'เข้าร่วมไม่สำเร็จ');
+        setError(data.error || 'Couldn\'t join. Please try again.');
         setIsJoining(false);
         return;
       }
 
-      // ชื่อซ้ำ → แสดง popup ถามเด็ก
+      // Duplicate name → show popup
       if (data.duplicate) {
         setDuplicateName(data.existing_name);
         setShowDuplicatePopup(true);
@@ -96,17 +100,17 @@ function JoinForm() {
         return;
       }
 
-      // สำเร็จ → เข้าเกม
+      // Success → enter game
       onJoinSuccess(data);
 
     } catch (err) {
       console.error('Join error:', err);
-      setError('เชื่อมต่อไม่ได้ ลองใหม่อีกครั้ง');
+      setError('Connection failed. Please try again.');
       setIsJoining(false);
     }
   };
 
-  // เด็กกดยืนยันว่าเป็นคนเดิม → reconnect
+  // Team confirms it's the same team → reconnect
   const handleReconnect = async () => {
     setIsJoining(true);
     setShowDuplicatePopup(false);
@@ -115,7 +119,7 @@ function JoinForm() {
       const { res, data } = await callJoinAPI(true);
 
       if (!res.ok) {
-        setError(data.error || 'เข้าร่วมไม่สำเร็จ');
+        setError(data.error || 'Couldn\'t join. Please try again.');
         setIsJoining(false);
         return;
       }
@@ -124,37 +128,42 @@ function JoinForm() {
 
     } catch (err) {
       console.error('Reconnect error:', err);
-      setError('เชื่อมต่อไม่ได้ ลองใหม่อีกครั้ง');
+      setError('Connection failed. Please try again.');
       setIsJoining(false);
     }
   };
 
-  // เด็กกดเปลี่ยนชื่อ → ปิด popup กลับไปแก้ชื่อ
+  // Team taps "change name" → close popup, clear name
   const handleChangeName = () => {
     setShowDuplicatePopup(false);
     setName('');
   };
 
-  // กด Enter = submit
+  // Enter key = submit
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !showDuplicatePopup) handleJoin();
   };
 
   return (
-    <div className="min-h-screen bg-[#0D1117] flex flex-col items-center justify-center p-4">
-      {/* Logo */}
+    <div className="min-h-screen bg-base flex flex-col items-center justify-center p-4">
+      {/* Word-mark lockup */}
       <div className="text-center mb-8">
         <h1 className="text-4xl sm:text-5xl font-black tracking-wider">
-          <span className="text-[#00FFB2]">MARKET</span>{' '}
-          <span className="text-[#00D4FF]">WARS</span>
+          <span style={{ color: 'var(--mw-violet)' }}>MARKET</span>{' '}
+          <span style={{ color: 'var(--mw-rose)' }}>WARS</span>
         </h1>
-        <p className="text-gray-400 text-sm mt-2">The Investment Game</p>
+        <p className="text-xs sm:text-sm font-extrabold tracking-[0.25em] mt-3" style={{ color: 'rgba(255,255,255,0.82)' }}>
+          PORTFOLIO CHALLENGE
+        </p>
+        <p className="text-[11px] sm:text-xs tracking-wide mt-1 text-gray-400">
+          KKP YoungGen Edition
+        </p>
       </div>
 
       {/* Join Card */}
-      <div className="w-full max-w-sm bg-[#161B22] rounded-2xl p-6 border border-gray-800">
+      <div className="w-full max-w-sm bg-surface rounded-2xl p-6 border border-border">
         <h2 className="text-white text-lg font-bold text-center mb-6">
-          🎮 เข้าร่วมเกม
+          Join the Challenge
         </h2>
 
         {/* Room Code Input */}
@@ -167,28 +176,28 @@ function JoinForm() {
             value={roomCode}
             onChange={(e) => setRoomCode(e.target.value.toUpperCase().slice(0, 4))}
             onKeyDown={handleKeyDown}
-            placeholder="เช่น MKTW"
+            placeholder="e.g. KKPW"
             maxLength={4}
-            className="w-full bg-[#0D1117] border border-gray-700 rounded-xl px-4 py-3 text-white text-center text-2xl font-mono tracking-[0.3em] placeholder:text-gray-600 placeholder:text-base placeholder:tracking-normal focus:outline-none focus:border-[#00FFB2] focus:ring-1 focus:ring-[#00FFB2] transition-colors"
+            className="w-full bg-base border border-border rounded-xl px-4 py-3 text-white text-center text-2xl font-mono tracking-[0.3em] placeholder:text-gray-600 placeholder:text-base placeholder:tracking-normal focus:outline-none focus:border-neon-green focus:ring-1 focus:ring-neon-green transition-colors"
             disabled={isJoining}
           />
         </div>
 
-        {/* Name Input */}
+        {/* Team Name Input */}
         <div className="mb-6">
           <label className="text-gray-400 text-xs uppercase tracking-wider mb-1 block">
-            ชื่อของเธอ
+            Team Name
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="ใส่ชื่อเล่น..."
+            placeholder="Enter your team name..."
             maxLength={20}
-            className="w-full bg-[#0D1117] border border-gray-700 rounded-xl px-4 py-3 text-white text-lg placeholder:text-gray-600 focus:outline-none focus:border-[#00D4FF] focus:ring-1 focus:ring-[#00D4FF] transition-colors"
+            className="w-full bg-base border border-border rounded-xl px-4 py-3 text-white text-lg placeholder:text-gray-600 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-colors"
             disabled={isJoining}
-            autoFocus={!!searchParams.get('room')} // ถ้ามี room code มาแล้ว auto-focus ที่ชื่อ
+            autoFocus={!!searchParams.get('room')} // if room code prefilled, focus the name
           />
         </div>
 
@@ -203,23 +212,24 @@ function JoinForm() {
         {showDuplicatePopup && (
           <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
             <p className="text-yellow-300 text-sm font-semibold text-center mb-1">
-              ⚠️ ชื่อ &quot;{duplicateName}&quot; มีคนใช้แล้ว
+              ⚠️ The name &quot;{duplicateName}&quot; is already taken
             </p>
             <p className="text-gray-400 text-xs text-center mb-3">
-              เธอคือ {duplicateName} คนเดิมที่เข้ามาก่อนหน้าใช่ไหม?
+              Are you the same {duplicateName} that joined earlier?
             </p>
             <div className="flex gap-2">
               <button
                 onClick={handleReconnect}
-                className="flex-1 py-2 rounded-lg bg-[#00FFB2] text-[#0D1117] text-sm font-bold hover:opacity-90 transition-opacity"
+                className="flex-1 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity"
+                style={{ background: 'var(--mw-violet)', color: 'var(--mw-base)' }}
               >
-                ✅ ใช่ เข้าเกมต่อ
+                ✅ Yes, rejoin
               </button>
               <button
                 onClick={handleChangeName}
                 className="flex-1 py-2 rounded-lg bg-gray-700 text-white text-sm font-bold hover:opacity-90 transition-opacity"
               >
-                ❌ ไม่ใช่ เปลี่ยนชื่อ
+                ❌ No, change name
               </button>
             </div>
           </div>
@@ -229,21 +239,22 @@ function JoinForm() {
         <button
           onClick={handleJoin}
           disabled={isJoining || !name.trim() || !roomCode.trim()}
-          className="w-full py-3 rounded-xl font-bold text-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-gradient-to-r from-[#00FFB2] to-[#00D4FF] text-[#0D1117] hover:opacity-90 active:scale-[0.98]"
+          className="w-full py-3 rounded-xl font-bold text-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.98]"
+          style={{ background: 'linear-gradient(90deg, var(--mw-violet-deep), var(--mw-rose))', color: 'var(--mw-base)' }}
         >
           {isJoining ? (
             <span className="flex items-center justify-center gap-2">
-              <span className="animate-spin">⏳</span> กำลังเข้าห้อง...
+              <span className="animate-spin">⏳</span> Joining...
             </span>
           ) : (
-            '🚀 เข้าเกม!'
+            'Enter Game →'
           )}
         </button>
       </div>
 
       {/* Footer */}
       <p className="text-gray-600 text-xs mt-6">
-        สแกน QR จากจอใหญ่ หรือพิมพ์ Room Code ด้านบน
+        Scan the QR on the main screen, or enter the Room Code above
       </p>
     </div>
   );
@@ -253,7 +264,7 @@ function JoinForm() {
 export default function JoinPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0D1117] flex items-center justify-center">
+      <div className="min-h-screen bg-base flex items-center justify-center">
         <div className="text-gray-400">Loading...</div>
       </div>
     }>

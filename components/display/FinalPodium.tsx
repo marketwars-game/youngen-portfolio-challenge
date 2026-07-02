@@ -1,7 +1,7 @@
 // FILE: components/display/FinalPodium.tsx — Final step ② Podium reveal (3→2→1)
-// VERSION: B19-v3 — slower per-name reveal (PODIUM_REVEAL constants, ~3.5–4s gaps so MC announces each); drumroll→name per place
-// LAST MODIFIED: 13 Jun 2026
-// HISTORY: B16d created — split from FinalDisplay; reveal 3→2→1 + champion glow + confetti + SFX; settled on revisit | B18 compareForRank | B19 staged reveal + Card→renderCard (no remount) + tunable timeline
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -86,7 +86,7 @@ export default function FinalPodium({ players, animate, playSfx }: FinalPodiumPr
           <p className={`${isChamp ? 'text-2xl' : 'text-lg'} mt-1`} style={{ color: 'rgba(255,255,255,0.85)' }}>฿{(parseFloat(p.money) || 0).toLocaleString()}</p>
           <p className={`${isChamp ? 'text-xl' : 'text-base'} mt-0.5`} style={{ color: getReturnColor(parseFloat(p.money)) }}>{getReturnPct(parseFloat(p.money))}%</p>
           {wonTwo(p.id) && (
-            <p className="mt-2 text-sm font-bold px-3 py-1 rounded-full" style={{ color: '#04210f', background: 'linear-gradient(135deg,#FFD700,#00FFB2)' }}>🏆 ชนะ 2 รางวัล · 2 awards</p>
+            <p className="mt-2 text-sm font-bold px-3 py-1 rounded-full" style={{ color: '#04210f', background: 'linear-gradient(135deg,#FFD700,var(--mw-violet))' }}>🏆 ชนะ 2 รางวัล · 2 awards</p>
           )}
         </div>
         <div className="rounded-t-xl mt-3" style={{ ...baseAnim(rankIndex), background: podiumBg[rankIndex], height: `${h}px`, width: `${w}px`, borderTop: `3px solid ${podiumColors[rankIndex]}` }} />
@@ -104,8 +104,8 @@ export default function FinalPodium({ players, animate, playSfx }: FinalPodiumPr
       <ConfettiCanvas fire={confetti} scale={1} />
 
       <div className="text-center mb-6" style={doAnim ? { animation: 'mwRise .5s ease-out both' } : {}}>
-        <h1 className="text-5xl font-black" style={{ color: '#FCD34D' }}>🏆 แชมป์ Market Wars</h1>
-        <p className="text-xl mt-2" style={{ color: 'rgba(255,255,255,0.78)' }}>Champions of the year · จบครบ 6 ปี</p>
+        <h1 className="text-5xl font-black" style={{ color: '#FCD34D' }}>🏆 MARKET WARS Champion</h1>
+        <p className="text-xl mt-2" style={{ color: 'rgba(255,255,255,0.78)' }}>Champions of the year · 7 challenges complete</p>
       </div>
 
       <div className="flex items-end gap-6">

@@ -1,7 +1,7 @@
 // FILE: components/mc/LeaderboardMC.tsx — MC Full Leaderboard
-// VERSION: B8R-v1 — Extracted from mc/[roomId]/page.tsx
-// LAST MODIFIED: 25 Mar 2026
-// HISTORY: B6 created (inline) | B8R extracted to component
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 interface LeaderboardMCProps {
@@ -29,7 +29,7 @@ export default function LeaderboardMC({ round, players }: LeaderboardMCProps) {
   const medals = ['🥇', '🥈', '🥉'];
 
   return (
-    <div className="bg-[#161b22] rounded-lg p-3 mb-3 border border-[#FFD700]/30">
+    <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3 border border-[#FFD700]/30">
       <p className="text-[#FFD700] text-sm font-bold mb-2">🏆 Leaderboard — Round {round}</p>
       <div className="max-h-64 overflow-y-auto space-y-0.5">
         {ranked.map((p, i) => (
@@ -41,7 +41,7 @@ export default function LeaderboardMC({ round, players }: LeaderboardMCProps) {
           </div>
         ))}
       </div>
-      <div className="mt-2 bg-[#0D1117] rounded p-2 text-[#00D4FF] text-xs">💡 ประกาศ Top 3! ถามเด็กว่าใครขึ้นมาเยอะสุด? แล้วกด Next</div>
+      <div className="mt-2 bg-base rounded p-2 text-neon-cyan text-xs">💡 ประกาศ Top 3! ถามเด็กว่าใครขึ้นมาเยอะสุด? แล้วกด Next</div>
     </div>
   );
 }

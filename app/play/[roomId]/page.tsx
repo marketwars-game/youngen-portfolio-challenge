@@ -1,7 +1,7 @@
 // FILE: app/play/[roomId]/page.tsx — Player game screen
-// VERSION: B18-v2 — + add quiz_score/quiz_speed_ms to leaderboard/final fetch (cascade + player awards)
-// LAST MODIFIED: 12 Jun 2026
-// HISTORY: B2 created | B3 phase sync + timer | B4 InvestmentPanel | B5 event_result + ResultsPanel | B6 leaderboard | B7 final phase | B8 research quiz (v2: 3-phase) | B8R refactor to components | B9 MarketFight | B12-UX mini step + year_intro + market_open | B13-BATCH3 ChanceCard + Realtime optimize + cut news/rebalance/attack | B16d final_* variants → FinalView | perf-v1 trim+jitter list fetch + debug badge | B18 quiz speed capture | B18-v2 select quiz fields for cascade
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useState, useRef, Suspense } from 'react';
@@ -199,7 +199,7 @@ function PlayerContent() {
   };
 
   // === Loading ===
-  if (loading) return <div className="min-h-screen bg-[#0D1117] flex items-center justify-center"><div className="text-[#00FFB2] text-xl animate-pulse">Loading...</div></div>;
+  if (loading) return <div className="min-h-screen bg-base flex items-center justify-center"><div className="text-neon-green text-xl animate-pulse">Loading...</div></div>;
 
   const phase = room?.current_phase || 'lobby';
   const isFinal = phase.startsWith('final'); // B16d: final / final_podium / final_awards / final_ranking
@@ -207,7 +207,7 @@ function PlayerContent() {
   const phaseInfo = PHASE_DISPLAY[phase] || PHASE_DISPLAY.lobby;
   const timerDuration = PHASE_TIMERS[phase] || 0;
   const timerPercent = timerDuration > 0 ? (timeLeft / timerDuration) * 100 : 0;
-  const timerColor = timeLeft <= 10 ? '#FF4444' : timeLeft <= 30 ? '#F59E0B' : '#00FFB2';
+  const timerColor = timeLeft <= 10 ? '#FF4444' : timeLeft <= 30 ? '#F59E0B' : 'var(--mw-violet)';
 
   // Step group progress for mini indicator
   const stepProgress = getStepGroupProgress(phase);
@@ -216,19 +216,19 @@ function PlayerContent() {
   // === Join Screen (no player yet) ===
   if (!player) {
     return (
-      <div className="min-h-screen bg-[#0D1117] text-white flex flex-col items-center justify-center p-6">
-        <h1 className="text-2xl font-bold text-[#00FFB2] mb-1">MARKET WARS</h1>
-        <p className="text-gray-400 text-sm mb-6">Room: <span className="text-[#00D4FF] font-mono">{roomId}</span></p>
+      <div className="min-h-screen bg-base text-white flex flex-col items-center justify-center p-6">
+        <h1 className="text-2xl font-bold text-neon-green mb-1">MARKET WARS</h1>
+        <p className="text-gray-400 text-sm mb-6">Room: <span className="text-neon-cyan font-mono">{roomId}</span></p>
         <div className="w-full max-w-xs">
-          <input type="text" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} maxLength={20} className="w-full bg-[#161b22] border border-gray-700 rounded-lg px-4 py-3 text-white text-center text-lg focus:border-[#00FFB2] focus:outline-none mb-3" />
-          <button onClick={() => handleJoin(false)} disabled={joining || !name.trim()} className="w-full py-3 rounded-lg font-bold text-[#0D1117] bg-[#00FFB2] hover:bg-[#00FFB2]/90 disabled:opacity-50">{joining ? 'Joining...' : 'Join Game'}</button>
+          <input type="text" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} maxLength={20} className="w-full bg-[var(--mw-surface)] border border-gray-700 rounded-lg px-4 py-3 text-white text-center text-lg focus:border-neon-green focus:outline-none mb-3" />
+          <button onClick={() => handleJoin(false)} disabled={joining || !name.trim()} className="w-full py-3 rounded-lg font-bold text-[color:var(--mw-base)] bg-neon-green hover:bg-neon-green/90 disabled:opacity-50">{joining ? 'Joining...' : 'Join Game'}</button>
           {joinError && <p className="text-red-400 text-sm text-center mt-2">{joinError}</p>}
         </div>
         {showDuplicatePopup && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-            <div className="bg-[#161b22] rounded-xl p-6 max-w-sm w-full">
+            <div className="bg-[var(--mw-surface)] rounded-xl p-6 max-w-sm w-full">
               <p className="text-white text-center mb-4">Name &quot;{name}&quot; is already taken. Is this you?</p>
-              <button onClick={() => handleJoin(true)} className="w-full py-2 rounded-lg bg-[#00FFB2] text-[#0D1117] font-bold mb-2">Yes, reconnect me</button>
+              <button onClick={() => handleJoin(true)} className="w-full py-2 rounded-lg bg-neon-green text-[color:var(--mw-base)] font-bold mb-2">Yes, reconnect me</button>
               <button onClick={() => { setShowDuplicatePopup(false); setName(''); }} className="w-full py-2 rounded-lg bg-gray-700 text-white">No, change name</button>
             </div>
           </div>
@@ -239,7 +239,7 @@ function PlayerContent() {
 
   // === Main Game Screen ===
   return (
-    <div className="min-h-screen bg-[#0D1117] text-white p-4">
+    <div className="min-h-screen bg-base text-white p-4">
 
       <DebugPanel
         title="PLAYER"
@@ -258,9 +258,9 @@ function PlayerContent() {
 
       {/* Player header — name + year badge + money */}
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[#00FFB2] font-bold text-sm">{player.name}</span>
+        <span className="text-neon-green font-bold text-sm">{player.name}</span>
         {phase !== 'lobby' && !isFinal && (
-          <span className="text-[10px] text-[#00D4FF] font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,212,255,0.1)' }}>
+          <span className="text-[10px] text-neon-cyan font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(var(--mw-rose-rgb),0.1)' }}>
             ปีที่ {round}
           </span>
         )}
@@ -288,20 +288,20 @@ function PlayerContent() {
                   style={{
                     width: step.status === 'current' ? 8 : 6,
                     height: step.status === 'current' ? 8 : 6,
-                    background: step.status === 'current' ? '#00FFB2'
-                      : step.status === 'done' ? 'rgba(0,255,178,0.35)'
+                    background: step.status === 'current' ? 'var(--mw-violet)'
+                      : step.status === 'done' ? 'rgba(var(--mw-violet-rgb),0.35)'
                       : 'rgba(255,255,255,0.1)',
-                    boxShadow: step.status === 'current' ? '0 0 6px rgba(0,255,178,0.4)' : 'none',
+                    boxShadow: step.status === 'current' ? '0 0 6px rgba(var(--mw-violet-rgb),0.4)' : 'none',
                   }}
                 />
                 {i < stepProgress.length - 1 && (
-                  <div className="flex-1 h-px mx-1" style={{ background: step.status === 'done' ? 'rgba(0,255,178,0.2)' : 'rgba(255,255,255,0.06)' }} />
+                  <div className="flex-1 h-px mx-1" style={{ background: step.status === 'done' ? 'rgba(var(--mw-violet-rgb),0.2)' : 'rgba(255,255,255,0.06)' }} />
                 )}
               </div>
             ))}
           </div>
           {currentStep && (
-            <span className="text-[10px] text-[#00FFB2] font-medium ml-2 whitespace-nowrap">
+            <span className="text-[10px] text-neon-green font-medium ml-2 whitespace-nowrap">
               {currentStep.icon} {currentStep.label}
             </span>
           )}
@@ -318,8 +318,8 @@ function PlayerContent() {
 
       {/* === Lobby — ✅ B13: ตัด player list (ดูบน Display แทน) === */}
       {phase === 'lobby' && (
-        <div className="bg-[#161b22] rounded-lg p-4 text-center">
-          <p className="text-[#00FFB2] font-bold text-lg mb-2">You&apos;re in! 🎉</p>
+        <div className="bg-[var(--mw-surface)] rounded-lg p-4 text-center">
+          <p className="text-neon-green font-bold text-lg mb-2">You&apos;re in! 🎉</p>
           <p className="text-gray-400 text-sm mb-3">Starting money: ฿{STARTING_MONEY.toLocaleString()}</p>
           <p className="text-gray-500 text-xs">📺 ดูจอใหญ่เพื่อดูรายชื่อผู้เล่น</p>
           <p className="text-gray-600 text-xs mt-1">รอ MC เริ่มเกม...</p>
@@ -331,8 +331,8 @@ function PlayerContent() {
         const introText = YEAR_INTRO_TEXT[round] || { title: `ปีที่ ${round} เริ่มแล้ว!`, subtitle: 'เตรียมตัวให้พร้อม' };
         return (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <p className="text-xs tracking-[4px] text-[#00D4FF] font-medium mb-1">Y E A R</p>
-            <p className="text-6xl font-black text-[#00FFB2] leading-none mb-3">{round}</p>
+            <p className="text-xs tracking-[4px] text-neon-cyan font-medium mb-1">Y E A R</p>
+            <p className="text-6xl font-black text-neon-green leading-none mb-3">{round}</p>
             <p className="text-base text-white font-medium mb-1">{introText.title}</p>
             <p className="text-sm text-gray-400 mb-5">{introText.subtitle}</p>
 
@@ -345,7 +345,7 @@ function PlayerContent() {
                 { num: 4, text: 'ดูผลตลาดประจำปี' },
               ].map((s) => (
                 <div key={s.num} className="flex items-center gap-2 text-sm text-gray-400">
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ background: 'rgba(0,255,178,0.15)', color: '#00FFB2' }}>{s.num}</span>
+                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ background: 'rgba(var(--mw-violet-rgb),0.15)', color: 'var(--mw-violet)' }}>{s.num}</span>
                   {s.text}
                 </div>
               ))}
@@ -373,7 +373,7 @@ function PlayerContent() {
       {!isFinal && !['invest', 'research', 'research_reveal', 'chance_card', 'year_intro', 'market_open', 'lobby'].includes(phase) && (
         <div className="text-center py-4">
           <div className="text-3xl mb-1">{phaseInfo.icon}</div>
-          <h2 className="text-xl font-bold text-[#00FFB2]">{phaseInfo.name}</h2>
+          <h2 className="text-xl font-bold text-neon-green">{phaseInfo.name}</h2>
           <p className="text-gray-400 text-sm mt-2">{phaseInfo.playerMessage}</p>
         </div>
       )}
@@ -405,8 +405,8 @@ function PlayerContent() {
       )}
 
       {/* === Event / Event Result — watch big screen === */}
-      {phase === 'event' && <div className="bg-[#161b22] rounded-lg p-6 text-center"><div className="text-4xl mb-2">📺</div><p className="text-gray-400">Watch the big screen!</p></div>}
-      {phase === 'event_result' && <div className="bg-[#161b22] rounded-lg p-6 text-center"><div className="text-4xl mb-2">📺</div><p className="text-gray-400">Watch the big screen!</p><p className="text-gray-600 text-xs mt-1">Market impact being revealed...</p></div>}
+      {phase === 'event' && <div className="bg-[var(--mw-surface)] rounded-lg p-6 text-center"><div className="text-4xl mb-2">📺</div><p className="text-gray-400">Watch the big screen!</p></div>}
+      {phase === 'event_result' && <div className="bg-[var(--mw-surface)] rounded-lg p-6 text-center"><div className="text-4xl mb-2">📺</div><p className="text-gray-400">Watch the big screen!</p><p className="text-gray-600 text-xs mt-1">Market impact being revealed...</p></div>}
 
       {/* === Results — Component === */}
       {phase === 'results' && <ResultsPanel round={round} player={player} />}
@@ -421,5 +421,5 @@ function PlayerContent() {
 }
 
 export default function PlayerPage() {
-  return (<Suspense fallback={<div className="min-h-screen bg-[#0D1117] flex items-center justify-center"><div className="text-[#00FFB2]">Loading...</div></div>}><PlayerContent /></Suspense>);
+  return (<Suspense fallback={<div className="min-h-screen bg-base flex items-center justify-center"><div className="text-neon-green">Loading...</div></div>}><PlayerContent /></Suspense>);
 }

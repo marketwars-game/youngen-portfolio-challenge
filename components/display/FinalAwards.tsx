@@ -1,7 +1,7 @@
 // FILE: components/display/FinalAwards.tsx — Final step ③ Special Awards + Dr.Bow twist
-// VERSION: B16d-v1 — Top Researcher pills → Smart Diversifier twist (egg/basket) last
-// LAST MODIFIED: 11 Jun 2026
-// HISTORY: B16d created — split from FinalDisplay; staggered reveal + twist confetti; bilingual TH·EN
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -43,14 +43,14 @@ export default function FinalAwards({ players, animate, playSfx }: FinalAwardsPr
       <style>{`@keyframes mwAwIn { from { opacity:0; transform:translateY(28px) scale(.96) } to { opacity:1; transform:translateY(0) scale(1) } }`}</style>
       <ConfettiCanvas fire={doAnim} nonce={twistFired} scale={0.55} />
 
-      <h1 className="text-5xl font-black mb-10" style={{ color: '#00FFB2', ...(doAnim ? { animation: 'mwAwIn .5s ease-out both' } : {}) }}>
+      <h1 className="text-5xl font-black mb-10" style={{ color: 'var(--mw-violet)', ...(doAnim ? { animation: 'mwAwIn .5s ease-out both' } : {}) }}>
         🏅 รางวัลพิเศษ · Special Awards
       </h1>
 
       {/* Top Researcher */}
       {quizMaster && quizMaster.winnerId && (
         <div className="w-[80%] max-w-4xl rounded-2xl px-8 py-6 mb-7 flex items-center gap-6"
-          style={{ background: '#161b22', border: '1px solid rgba(168,85,247,0.3)', ...cardAnim(0.2) }}>
+          style={{ background: 'var(--mw-surface)', border: '1px solid rgba(168,85,247,0.3)', ...cardAnim(0.2) }}>
           <span className="text-6xl">{quizMaster.emoji}</span>
           <div className="flex-1">
             <p className="text-3xl font-bold" style={{ color: '#C084FC' }}>{quizMaster.name}</p>
@@ -67,8 +67,8 @@ export default function FinalAwards({ players, animate, playSfx }: FinalAwardsPr
       {/* Smart Diversifier — the twist */}
       {diversifier && diversifier.winnerId && (
         <div className="relative w-[80%] max-w-4xl rounded-2xl px-8 py-6 flex items-center gap-6"
-          style={{ background: '#161b22', border: '1.5px solid #22c55e', boxShadow: '0 0 40px rgba(34,197,94,0.28)', ...cardAnim(1.6) }}>
-          <span className="absolute top-4 right-6 text-base font-bold" style={{ color: '#00FFB2' }}>✨ พี่โบว์เฉลย · Dr.Bow reveals</span>
+          style={{ background: 'var(--mw-surface)', border: '1.5px solid #22c55e', boxShadow: '0 0 40px rgba(34,197,94,0.28)', ...cardAnim(1.6) }}>
+          <span className="absolute top-4 right-6 text-base font-bold" style={{ color: 'var(--mw-violet)' }}>✨ พี่โบว์เฉลย · Dr.Bow reveals</span>
           <span className="text-6xl">{diversifier.emoji}</span>
           <div className="flex-1">
             <p className="text-3xl font-bold" style={{ color: '#34d399' }}>{diversifier.name}</p>
@@ -77,7 +77,7 @@ export default function FinalAwards({ players, animate, playSfx }: FinalAwardsPr
               <span>🧺🥚</span><span>🧺🥚</span><span>🧺🥚</span>
             </div>
             <p className="text-lg mt-3" style={{ color: 'rgba(255,255,255,0.8)' }}>
-              <b style={{ color: '#00FFB2' }}>"อย่าใส่ไข่ทั้งหมดในตะกร้าใบเดียว"</b> · {diversifier.lessonEn}
+              <b style={{ color: 'var(--mw-violet)' }}>"อย่าใส่ไข่ทั้งหมดในตะกร้าใบเดียว"</b> · {diversifier.lessonEn}
             </p>
             <div className="mt-3">
               <span className="text-2xl px-5 py-2 rounded-full font-bold" style={{ background: 'rgba(34,197,94,0.18)', border: '1px solid #22c55e', color: '#fff' }}>{diversifier.winnerName}</span>

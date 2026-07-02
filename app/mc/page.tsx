@@ -1,4 +1,7 @@
-// app/mc/page.tsx
+// FILE: app/mc/page.tsx — MC Landing (PIN gate + create/rejoin room)
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 // =============================================
 // MC Landing — PIN Gate + Create Room
 // Flow: ใส่ PIN → ผ่าน → เห็นปุ่ม Create Room (หรือ "กลับเข้าห้องเดิม")
@@ -121,18 +124,18 @@ export default function MCPage() {
   // --- Loading ---
   if (isCheckingSession) {
     return (
-      <div className="min-h-screen bg-[#0D1117] flex items-center justify-center">
-        <div className="text-[#00FFB2] text-xl animate-pulse">Loading...</div>
+      <div className="min-h-screen bg-base flex items-center justify-center">
+        <div className="text-neon-green text-xl animate-pulse">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0D1117] flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-base flex flex-col items-center justify-center p-6">
       {/* Logo */}
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold text-white tracking-wider">
-          MARKET <span className="text-[#00FFB2]">WARS</span>
+          MARKET <span className="text-neon-green">WARS</span>
         </h1>
         <p className="text-gray-400 mt-2">Game Master Control</p>
       </div>
@@ -150,7 +153,7 @@ export default function MCPage() {
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 placeholder="ใส่ PIN..."
-                className="w-full bg-[#161B22] border border-gray-700 rounded-lg px-4 py-3 text-white text-center text-2xl tracking-[0.5em] focus:outline-none focus:border-[#00FFB2] transition-colors"
+                className="w-full bg-surface border border-gray-700 rounded-lg px-4 py-3 text-white text-center text-2xl tracking-[0.5em] focus:outline-none focus:border-neon-green transition-colors"
                 autoFocus
                 maxLength={10}
               />
@@ -164,7 +167,7 @@ export default function MCPage() {
             <button
               type="submit"
               disabled={isLoading || !pin.trim()}
-              className="w-full bg-[#00FFB2] text-[#0D1117] font-bold py-3 rounded-lg hover:bg-[#00D4FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-neon-green text-[color:var(--mw-base)] font-bold py-3 rounded-lg hover:bg-neon-cyan transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'กำลังตรวจสอบ...' : 'เข้าสู่ระบบ'}
             </button>
@@ -175,9 +178,9 @@ export default function MCPage() {
         <div className="w-full max-w-sm space-y-4">
           {existingRoom ? (
             // --- มีห้องเปิดอยู่แล้ว ---
-            <div className="bg-[#161B22] border border-yellow-500/30 rounded-xl p-6 text-center space-y-4">
+            <div className="bg-surface border border-yellow-500/30 rounded-xl p-6 text-center space-y-4">
               <p className="text-yellow-400 text-sm">⚠️ มีห้องเปิดอยู่แล้ว</p>
-              <div className="text-5xl font-mono font-bold text-[#00FFB2] tracking-widest">
+              <div className="text-5xl font-mono font-bold text-neon-green tracking-widest">
                 {existingRoom.id}
               </div>
               <p className="text-gray-400 text-sm">
@@ -186,7 +189,7 @@ export default function MCPage() {
 
               <button
                 onClick={() => router.push(`/mc/${existingRoom.id}`)}
-                className="w-full bg-[#00FFB2] text-[#0D1117] font-bold py-3 rounded-lg hover:bg-[#00D4FF] transition-colors"
+                className="w-full bg-neon-green text-[color:var(--mw-base)] font-bold py-3 rounded-lg hover:bg-neon-cyan transition-colors"
               >
                 กลับเข้าห้องเดิม
               </button>
@@ -201,13 +204,13 @@ export default function MCPage() {
             </div>
           ) : (
             // --- ไม่มีห้อง → สร้างใหม่ ---
-            <div className="bg-[#161B22] border border-gray-700 rounded-xl p-6 text-center space-y-4">
+            <div className="bg-surface border border-gray-700 rounded-xl p-6 text-center space-y-4">
               <p className="text-gray-400">พร้อมเริ่มเกมใหม่!</p>
 
               <button
                 onClick={() => handleCreateRoom(false)}
                 disabled={isLoading}
-                className="w-full bg-[#00FFB2] text-[#0D1117] font-bold py-4 rounded-lg text-xl hover:bg-[#00D4FF] transition-colors disabled:opacity-50"
+                className="w-full bg-neon-green text-[color:var(--mw-base)] font-bold py-4 rounded-lg text-xl hover:bg-neon-cyan transition-colors disabled:opacity-50"
               >
                 {isLoading ? 'กำลังสร้าง...' : '🎮 สร้างห้องใหม่'}
               </button>

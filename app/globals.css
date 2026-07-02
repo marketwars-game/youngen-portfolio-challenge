@@ -1,8 +1,35 @@
+/* FILE: app/globals.css — global styles + brand design tokens
+ * VERSION: YG-V1 — NextGen Royal brand tokens (single source of truth)
+ * LAST MODIFIED: 02 Jul 2026
+ * HISTORY: market-wars B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 introduce --mw-* tokens + royal re-theme
+ *
+ * CHANGE THEME HERE ONLY. Every screen (player / mc / display) reads these vars
+ * via Tailwind tokens (see tailwind.config.ts) or inline var(--mw-*).
+ * Kids-camp neon (green #00FFB2 / cyan #00D4FF) was retired in YG-V1.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* --- surfaces --- */
+  --mw-base: #12102E;        /* was #0D1117 — deep royal indigo (matches NextGen backdrop) */
+  --mw-surface: #211E4A;     /* was #161B22 — card surface */
+  --mw-border: #37326B;      /* was #30363D — border on royal base */
+
+  /* --- brand identity --- */
+  --mw-violet: #9B82FF;      /* was neon green #00FFB2 (primary / MARKET) */
+  --mw-violet-deep: #8A6BFF; /* gradient / active state */
+  --mw-rose: #D57BA8;        /* was neon cyan #00D4FF (secondary / WARS) — muted from event pink */
+
+  /* --- rgb triples for rgba() tints (keep in sync with the hex above) --- */
+  --mw-violet-rgb: 155,130,255;
+  --mw-rose-rgb: 213,123,168;
+  --mw-base-rgb: 18,16,46;
+  --mw-surface-rgb: 33,30,74;
+}
 
 @layer base {
   body {

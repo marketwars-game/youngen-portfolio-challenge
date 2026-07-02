@@ -1,7 +1,7 @@
 // FILE: components/player/LeaderboardView.tsx — Player Leaderboard
-// VERSION: B18-v1 — rank via compareForRank (money → quiz → speed)
-// LAST MODIFIED: 25 Mar 2026
-// HISTORY: B6 created (inline) | B8R extracted to component | B18 compareForRank
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { compareForRank } from '@/lib/ranking';
@@ -40,10 +40,10 @@ export default function LeaderboardView({ player, players, round }: LeaderboardV
   const medals = ['🥇', '🥈', '🥉'];
 
   return (
-    <div className="bg-[#161b22] rounded-lg p-4">
+    <div className="bg-[var(--mw-surface)] rounded-lg p-4">
       <div className="text-center mb-4">
         <div className="text-[10px] tracking-[3px] text-gray-600 mb-1">YOUR RANK</div>
-        <div className="text-5xl font-bold text-[#00FFB2]">#{myRank}</div>
+        <div className="text-5xl font-bold text-neon-green">#{myRank}</div>
         <div className="text-xs text-gray-500 mt-1">of {ranked.length} players</div>
         <div className="text-xl font-bold text-white mt-2">฿{myMoney.toLocaleString()}</div>
         {round > 1 && (
@@ -65,10 +65,10 @@ export default function LeaderboardView({ player, players, round }: LeaderboardV
         {top5.map((p, i) => {
           const isMe = p.id === player.id;
           return (
-            <div key={p.id} className={`flex items-center py-1.5 px-2 rounded text-sm ${isMe ? 'bg-[#00FFB2]/10' : ''}`}>
+            <div key={p.id} className={`flex items-center py-1.5 px-2 rounded text-sm ${isMe ? 'bg-neon-green/10' : ''}`}>
               <span className="w-6 text-center">{i < 3 ? medals[i] : <span className="text-xs text-gray-500">#{p.rank}</span>}</span>
-              <span className={`flex-1 ml-1 ${isMe ? 'text-[#00FFB2] font-bold' : i === 0 ? 'text-[#FFD700]' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-[#CD9B6A]' : 'text-gray-400'}`}>{isMe ? `You (${p.name})` : p.name}</span>
-              <span className={`${isMe ? 'text-[#00FFB2] font-bold' : i === 0 ? 'text-[#FFD700]' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-[#CD9B6A]' : 'text-gray-400'}`}>฿{p.money.toLocaleString()}</span>
+              <span className={`flex-1 ml-1 ${isMe ? 'text-neon-green font-bold' : i === 0 ? 'text-[#FFD700]' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-[#CD9B6A]' : 'text-gray-400'}`}>{isMe ? `You (${p.name})` : p.name}</span>
+              <span className={`${isMe ? 'text-neon-green font-bold' : i === 0 ? 'text-[#FFD700]' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-[#CD9B6A]' : 'text-gray-400'}`}>฿{p.money.toLocaleString()}</span>
             </div>
           );
         })}
@@ -77,10 +77,10 @@ export default function LeaderboardView({ player, players, round }: LeaderboardV
       {!isInTop5 && (
         <>
           <div className="border-t border-dashed border-gray-700 my-2" />
-          <div className="flex items-center py-1.5 px-2 rounded text-sm bg-[#00FFB2]/10">
-            <span className="w-6 text-center text-xs text-[#00FFB2] font-bold">#{myRank}</span>
-            <span className="flex-1 ml-1 text-[#00FFB2] font-bold">You ({player.name})</span>
-            <span className="text-[#00FFB2] font-bold">฿{myMoney.toLocaleString()}</span>
+          <div className="flex items-center py-1.5 px-2 rounded text-sm bg-neon-green/10">
+            <span className="w-6 text-center text-xs text-neon-green font-bold">#{myRank}</span>
+            <span className="flex-1 ml-1 text-neon-green font-bold">You ({player.name})</span>
+            <span className="text-neon-green font-bold">฿{myMoney.toLocaleString()}</span>
           </div>
         </>
       )}

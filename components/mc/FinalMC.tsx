@@ -1,7 +1,7 @@
 // FILE: components/mc/FinalMC.tsx — MC Final Phase
-// VERSION: B16d-v1 — script aligned to decision-based Smart Diversifier + Dr.Bow twist + 4-step note
-// LAST MODIFIED: 11 Jun 2026
-// HISTORY: B7 created (stats + leaderboard + tip) | B8R extracted to component | B11 awards + portfolio + script | B16d script update (Dr.Bow twist + 4-step)
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 
 import { STARTING_MONEY, COMPANIES } from '@/lib/constants';
 import { calculateAwards } from '@/lib/awards';
@@ -60,13 +60,13 @@ export default function FinalMC({ players }: FinalMCProps) {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-2">
-        <div className="bg-[#161b22] rounded-lg p-3 text-center">
-          <div className="text-xl font-bold" style={{ color: '#00D4FF' }}>
+        <div className="bg-[var(--mw-surface)] rounded-lg p-3 text-center">
+          <div className="text-xl font-bold" style={{ color: 'var(--mw-rose)' }}>
             {totalPlayers}
           </div>
           <div className="text-xs text-gray-500">Total players</div>
         </div>
-        <div className="bg-[#161b22] rounded-lg p-3 text-center">
+        <div className="bg-[var(--mw-surface)] rounded-lg p-3 text-center">
           <div
             className="text-xl font-bold"
             style={{ color: avgReturn >= 0 ? '#22c55e' : '#ef4444' }}
@@ -75,7 +75,7 @@ export default function FinalMC({ players }: FinalMCProps) {
           </div>
           <div className="text-xs text-gray-500">Avg return</div>
         </div>
-        <div className="bg-[#161b22] rounded-lg p-3 text-center">
+        <div className="bg-[var(--mw-surface)] rounded-lg p-3 text-center">
           <div className="text-xl font-bold" style={{ color: '#FCD34D' }}>
             {biggestWinner?.name || '-'}
           </div>
@@ -83,7 +83,7 @@ export default function FinalMC({ players }: FinalMCProps) {
             Biggest winner ({bigWinPct >= 0 ? '+' : ''}{bigWinPct.toFixed(1)}%)
           </div>
         </div>
-        <div className="bg-[#161b22] rounded-lg p-3 text-center">
+        <div className="bg-[var(--mw-surface)] rounded-lg p-3 text-center">
           <span className="text-xl font-bold" style={{ color: '#22c55e' }}>
             {profitCount}
           </span>
@@ -96,7 +96,7 @@ export default function FinalMC({ players }: FinalMCProps) {
       </div>
 
       {/* === B11: Awards Box === */}
-      <div className="bg-[#161b22] rounded-lg p-3 border border-[#FCD34D]/30">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-3 border border-[#FCD34D]/30">
         <div className="text-xs tracking-widest text-[#FCD34D] mb-3">🏅 SPECIAL AWARDS</div>
         {awards.map((award) => (
           <div key={award.id} className="mb-3 last:mb-0">
@@ -109,12 +109,12 @@ export default function FinalMC({ players }: FinalMCProps) {
                 {award.winnerName}
               </span>
             </div>
-            <div className="text-xs" style={{ color: '#00D4FF' }}>{award.stat}</div>
+            <div className="text-xs" style={{ color: 'var(--mw-rose)' }}>{award.stat}</div>
             <div className="text-xs text-gray-500 mt-0.5">{award.lesson}</div>
 
             {/* Portfolio breakdown สำหรับนักลงทุนกระจายความเสี่ยง */}
             {award.portfolioBreakdown && award.portfolioBreakdown.length > 0 && (
-              <div className="mt-2 bg-[#0d1117] rounded p-2">
+              <div className="mt-2 bg-[var(--mw-base)] rounded p-2">
                 <div className="text-xs text-gray-500 mb-1">📊 Portfolio ทุกรอบ:</div>
                 <div className="space-y-1">
                   {award.portfolioBreakdown.map((rb) => (
@@ -147,7 +147,7 @@ export default function FinalMC({ players }: FinalMCProps) {
       </div>
 
       {/* Full Leaderboard */}
-      <div className="bg-[#161b22] rounded-lg p-3">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-3">
         <div className="text-xs tracking-widest text-gray-500 mb-2">FULL LEADERBOARD</div>
         <div className="space-y-1 max-h-64 overflow-y-auto">
           {sorted.map((p, i) => {
@@ -191,11 +191,11 @@ export default function FinalMC({ players }: FinalMCProps) {
       </div>
 
       {/* 5 บทเรียน */}
-      <div className="bg-[#161b22] rounded-lg p-3">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-3">
         <div className="text-xs tracking-widest text-gray-500 mb-2">📚 5 บทเรียนการลงทุน</div>
         <div className="text-xs text-gray-400 space-y-1.5">
           <p>1. <strong style={{ color: '#22c55e' }}>กระจายความเสี่ยง = รอดดี</strong> — คนที่ลง 3-4 บริษัทไม่เคยขาดทุนหนัก</p>
-          <p>2. <strong style={{ color: '#00D4FF' }}>High Risk = High Return & Loss</strong> — หุ้นเทคขึ้นเยอะ แต่ลงก็เยอะ</p>
+          <p>2. <strong style={{ color: 'var(--mw-rose)' }}>High Risk = High Return & Loss</strong> — หุ้นเทคขึ้นเยอะ แต่ลงก็เยอะ</p>
           <p>3. <strong style={{ color: '#F59E0B' }}>ฝากอย่างเดียว ปลอดภัยแต่โตไม่ทัน</strong> — PiggyBank+ ไม่เคยลบ แต่ต่ำสุด</p>
           <p>4. <strong style={{ color: '#ef4444' }}>ดีเกินจริง มักไม่จริง</strong> — ระวังดีลที่การันตีกำไร!</p>
           <p>5. <strong style={{ color: '#A855F7' }}>ไม่มีใครเดาถูกทุกรอบ</strong> — ศึกษาข้อมูล กระจายเสี่ยง อดทน</p>

@@ -1,7 +1,7 @@
 // FILE: components/display/FinalDisplay.tsx — Display Final Phase ROUTER (4 steps)
-// VERSION: B16d-v1 — split single screen → suspense / podium / awards / ranking (MC-controlled steps)
-// LAST MODIFIED: 11 Jun 2026
-// HISTORY: B7 created | B8R extracted | B11 awards | B12-UX horizontal | B13 redesign | B15 projector polish | B16d 4-step router (FinalPodium/FinalAwards/FinalRanking)
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import type { SfxKey } from '@/lib/sound';
@@ -26,7 +26,7 @@ function FinalSuspense() {
         @keyframes mwPulse { 0%,100%{ transform:scale(1); opacity:.9 } 50%{ transform:scale(1.06); opacity:1 } }
         @keyframes mwBlink { 0%,100%{ opacity:.25 } 50%{ opacity:1 } }
       `}</style>
-      <h1 className="text-7xl font-black" style={{ animation: 'mwPulse 0.8s ease-in-out infinite', background: 'linear-gradient(90deg,#fff,#00FFB2)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
+      <h1 className="text-7xl font-black" style={{ animation: 'mwPulse 0.8s ease-in-out infinite', background: 'linear-gradient(90deg,#fff,var(--mw-violet))', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
         ใครคือแชมป์?
       </h1>
       <p className="text-3xl mt-5" style={{ color: 'rgba(255,255,255,0.78)' }}>Who's the champion of Market Wars?</p>

@@ -1,7 +1,7 @@
 // FILE: components/display/LiveNameFeed.tsx — Research sidebar live feed (newest on top)
-// VERSION: B16b-v1 — submitted names flow in from top, push older down, fade out at bottom
-// LAST MODIFIED: 11 Jun 2026
-// HISTORY: B16b created — replaces plain quiz-submitted counter in ResearchDisplay right column
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -55,7 +55,7 @@ export default function LiveNameFeed({ players, round }: LiveNameFeedProps) {
 
       {/* count */}
       <div className="text-center flex-shrink-0" style={{ marginBottom: 14 }}>
-        <p style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 52, color: '#00FFB2', lineHeight: 1 }}>
+        <p style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 52, color: 'var(--mw-violet)', lineHeight: 1 }}>
           {submittedCount}<span style={{ fontSize: 26, color: 'rgba(255,255,255,0.4)' }}>/{total}</span>
         </p>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.65)', marginTop: 4 }}>ส่งคำตอบแล้ว · Answered</p>
@@ -76,8 +76,8 @@ export default function LiveNameFeed({ players, round }: LiveNameFeedProps) {
                 style={{
                   gap: 9,
                   padding: '8px 11px',
-                  background: 'rgba(0,255,178,0.10)',
-                  border: '0.5px solid rgba(0,255,178,0.3)',
+                  background: 'rgba(var(--mw-violet-rgb),0.10)',
+                  border: '0.5px solid rgba(var(--mw-violet-rgb),0.3)',
                   animation: 'feedIn .3s ease',
                 }}
               >
@@ -97,7 +97,7 @@ export default function LiveNameFeed({ players, round }: LiveNameFeedProps) {
           })}
         </div>
         {/* fade-out bottom */}
-        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 56, pointerEvents: 'none', background: 'linear-gradient(transparent, #0D1117)' }} />
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 56, pointerEvents: 'none', background: 'linear-gradient(transparent, var(--mw-base))' }} />
       </div>
     </div>
   );

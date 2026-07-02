@@ -1,7 +1,7 @@
 // FILE: components/display/FinalRanking.tsx — Final step ④ Full ranking + teaching overview
-// VERSION: B20-v3 — inline benchmark "ghosts" (dynamic from RETURN_TABLE) + scale-to-fit height + Top-3/winner glow
-// LAST MODIFIED: 13 Jun 2026
-// HISTORY: B16d created — split from FinalDisplay; show all players for parents/photos | B16d-v2 responsive cols | B18 compareForRank | B20-v1 teaching redesign (cell green/red tint, header stats bar, strategy classify from portfolio_used, insight ranges, 🏅 diversifier badge, 2-line cards, removed photo wording) | B20-v2 fix insight text color | B20-v3 replace min–max insight with inline benchmark ghosts computed dynamically from RETURN_TABLE+COMPANIES (best/worst all-in, savings, equal-weight; ranked among real players; blue dashed, no rank #); scale-to-fit height so all N players always fit (useEffect measure + transform, independent of display zoom); Top-3 medal-colored glow + winner green glow override
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
@@ -155,9 +155,9 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
   const waveTotal = 1100;
   const stEmoji = (s: Strat) => (s === 'allin' ? '🎯' : s === 'div' ? '🧺' : '');
   const cellBg = (i: number, profit: boolean) =>
-    i === 0 ? 'linear-gradient(180deg,rgba(255,215,0,0.16),#161b22)' :
-    i === 1 ? 'linear-gradient(180deg,rgba(192,192,192,0.11),#161b22)' :
-    i === 2 ? 'linear-gradient(180deg,rgba(205,127,50,0.13),#161b22)' :
+    i === 0 ? 'linear-gradient(180deg,rgba(255,215,0,0.16),var(--mw-surface))' :
+    i === 1 ? 'linear-gradient(180deg,rgba(192,192,192,0.11),var(--mw-surface))' :
+    i === 2 ? 'linear-gradient(180deg,rgba(205,127,50,0.13),var(--mw-surface))' :
     profit ? 'rgba(34,197,94,0.09)' : 'rgba(239,68,68,0.09)';
   const cellBorder = (profit: boolean) => (profit ? 'rgba(34,197,94,0.28)' : 'rgba(239,68,68,0.26)');
 
@@ -216,7 +216,7 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
 
             let border = i < 3 ? `1.5px solid ${rankColors[i]}` : `1px solid ${cellBorder(profit)}`;
             let boxShadow = i < 3 ? `0 0 15px ${medalGlow[i]}` : 'none';
-            if (win) { border = '1.5px solid #00FFB2'; boxShadow = '0 0 16px rgba(0,255,178,0.6)'; } // winner เขียวชนะทุกกรณี
+            if (win) { border = '1.5px solid var(--mw-violet)'; boxShadow = '0 0 16px rgba(var(--mw-violet-rgb),0.6)'; } // winner เขียวชนะทุกกรณี
 
             return (
               <div key={p.id} className="rounded-lg px-3 py-2 flex flex-col justify-center gap-0.5"
@@ -232,7 +232,7 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
                     {i < 3 ? medals[i] : `#${i + 1}`}
                   </span>
                   <span className="flex-1 min-w-0 font-bold text-lg truncate" style={{ color: i < 3 ? rankColors[i] : '#fff' }}>{p.name}</span>
-                  {win && <span className="flex-shrink-0" style={{ fontSize: '1.25rem', filter: 'drop-shadow(0 0 4px rgba(0,255,178,0.9))' }}>🏅</span>}
+                  {win && <span className="flex-shrink-0" style={{ fontSize: '1.25rem', filter: 'drop-shadow(0 0 4px rgba(var(--mw-violet-rgb),0.9))' }}>🏅</span>}
                 </div>
                 <div className="flex items-center gap-2">
                   {s && <span style={{ fontSize: '0.95rem' }}>{stEmoji(s)}</span>}

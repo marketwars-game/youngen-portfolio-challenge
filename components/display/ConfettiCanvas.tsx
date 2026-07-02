@@ -1,7 +1,7 @@
 // FILE: components/display/ConfettiCanvas.tsx — reusable confetti burst overlay (Display)
-// VERSION: B16d-v1 — canvas confetti for Final podium reveal + Smart Diversifier twist
-// LAST MODIFIED: 11 Jun 2026
-// HISTORY: B16d created — self-contained burst on `fire`, graceful (no deps)
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -12,7 +12,7 @@ interface ConfettiCanvasProps {
   scale?: number;      // 1 = full burst
 }
 
-const COLORS = ['#00FFB2', '#22c55e', '#FFD700', '#00D4FF', '#EC4899', '#ffffff'];
+const COLORS = ['var(--mw-violet)', '#22c55e', '#FFD700', 'var(--mw-rose)', '#EC4899', '#ffffff'];
 
 export default function ConfettiCanvas({ fire, nonce = 0, scale = 1 }: ConfettiCanvasProps) {
   const ref = useRef<HTMLCanvasElement>(null);

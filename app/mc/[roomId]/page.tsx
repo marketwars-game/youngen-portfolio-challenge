@@ -1,7 +1,7 @@
 // FILE: app/mc/[roomId]/page.tsx — MC Control screen
-// VERSION: B16d-v1+perf-v1 — ?debug=1 overlay (fetch ms/rows, throttle queue, evt/s, ch status); no behaviour change when off
-// LAST MODIFIED: 12 Jun 2026
-// HISTORY: B1 created | B3 phase control + timer | B4 submitted count + bug fix | B5 event_result + results | B6 leaderboard | B7 final phase | B8 research quiz (v2: 3-phase) | B8R refactor to components | B9 attack stats | B12-UX full step bar + year_intro + market_open | B13-BATCH3 throttle + cut news/attack/rebalance + chance card | B16d final 4-step controls | perf-v1 debug overlay
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -150,13 +150,13 @@ export default function MCControlRoom() {
   const handleEndGame = () => { if (!showEndConfirm) { setShowEndConfirm(true); return; } handleAction('end'); setShowEndConfirm(false); };
 
   const formatTime = (seconds: number) => { const m = Math.floor(seconds / 60); const s = seconds % 60; return `${m}:${String(s).padStart(2, '0')}`; };
-  const getTimerColor = () => { if (timeLeft <= 10) return '#FF4444'; if (timeLeft <= 30) return '#F59E0B'; return '#00FFB2'; };
+  const getTimerColor = () => { if (timeLeft <= 10) return '#FF4444'; if (timeLeft <= 30) return '#F59E0B'; return 'var(--mw-violet)'; };
 
   const submittedCount = players.filter((p) => p.portfolio_submitted_round === room?.current_round).length;
   const quizSubmittedCount = players.filter((p) => (p.quiz_answered_round || 0) >= (room?.current_round || 0)).length;
 
-  if (loading) return <div className="min-h-screen bg-[#0D1117] flex items-center justify-center"><div className="text-[#00FFB2] text-xl">Loading...</div></div>;
-  if (!room) return <div className="min-h-screen bg-[#0D1117] flex items-center justify-center"><div className="text-red-400 text-xl">Room not found</div></div>;
+  if (loading) return <div className="min-h-screen bg-base flex items-center justify-center"><div className="text-neon-green text-xl">Loading...</div></div>;
+  if (!room) return <div className="min-h-screen bg-base flex items-center justify-center"><div className="text-red-400 text-xl">Room not found</div></div>;
 
   const phase = room.current_phase || 'lobby';
   const isFinal = phase.startsWith('final'); // B16d: final / final_podium / final_awards / final_ranking
@@ -169,7 +169,7 @@ export default function MCControlRoom() {
   const stepProgress = getStepGroupProgress(phase);
 
   return (
-    <div className="min-h-screen bg-[#0D1117] text-white p-4">
+    <div className="min-h-screen bg-base text-white p-4">
 
       <DebugPanel
         title="MC"
@@ -192,15 +192,15 @@ export default function MCControlRoom() {
       <div className="flex items-center justify-between mb-2">
         <div>
           <h1 className="text-lg font-bold text-[#FF6B6B]">MC CONTROL</h1>
-          <p className="text-xs text-gray-500">Room: <span className="text-[#00D4FF] font-mono">{roomId}</span></p>
+          <p className="text-xs text-gray-500">Room: <span className="text-neon-cyan font-mono">{roomId}</span></p>
         </div>
         <div className="flex items-center gap-2">
           {phase !== 'lobby' && !isFinal && (
-            <span className="text-[10px] text-[#00D4FF] font-medium px-2.5 py-0.5 rounded-full" style={{ background: 'rgba(0,212,255,0.1)' }}>
+            <span className="text-[10px] text-neon-cyan font-medium px-2.5 py-0.5 rounded-full" style={{ background: 'rgba(var(--mw-rose-rgb),0.1)' }}>
               ปีที่ {round} / {TOTAL_ROUNDS}
             </span>
           )}
-          <button onClick={() => window.open(`/display/${roomId}`, '_blank')} className="text-[10px] text-[#00D4FF] border border-[#00D4FF]/30 px-2 py-0.5 rounded hover:bg-[#00D4FF]/10">Display ↗</button>
+          <button onClick={() => window.open(`/display/${roomId}`, '_blank')} className="text-[10px] text-neon-cyan border border-neon-cyan/30 px-2 py-0.5 rounded hover:bg-neon-cyan/10">Display ↗</button>
         </div>
       </div>
 
@@ -212,8 +212,8 @@ export default function MCControlRoom() {
               <span
                 className="text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap"
                 style={{
-                  color: step.status === 'current' ? '#00FFB2' : step.status === 'done' ? 'rgba(0,255,178,0.35)' : 'rgba(255,255,255,0.2)',
-                  background: step.status === 'current' ? 'rgba(0,255,178,0.1)' : 'transparent',
+                  color: step.status === 'current' ? 'var(--mw-violet)' : step.status === 'done' ? 'rgba(var(--mw-violet-rgb),0.35)' : 'rgba(255,255,255,0.2)',
+                  background: step.status === 'current' ? 'rgba(var(--mw-violet-rgb),0.1)' : 'transparent',
                   fontWeight: step.status === 'current' ? 600 : 400,
                 }}
               >
@@ -228,14 +228,14 @@ export default function MCControlRoom() {
       )}
 
       {/* Phase Info Card */}
-      <div className="bg-[#161b22] rounded-lg p-3 mb-3">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3">
         <div className="flex items-center justify-between mb-1">
           <span className="text-gray-400 text-xs uppercase tracking-wider">{phaseInfo.icon} {phaseInfo.name}</span>
           {phase !== 'lobby' && !isFinal && <span className="text-gray-500 text-xs">Players: {players.length}</span>}
         </div>
         {phase === 'lobby' && (
           <div className="mt-2 space-y-1">
-            {players.length === 0 ? <p className="text-gray-500 text-sm">No players yet...</p> : players.map((p) => (<div key={p.id} className="flex justify-between text-sm border-b border-gray-800 pb-1"><span className="text-[#00FFB2]">{p.name}</span><span className="text-gray-500">฿{(parseFloat(p.money) || 0).toLocaleString()}</span></div>))}
+            {players.length === 0 ? <p className="text-gray-500 text-sm">No players yet...</p> : players.map((p) => (<div key={p.id} className="flex justify-between text-sm border-b border-gray-800 pb-1"><span className="text-neon-green">{p.name}</span><span className="text-gray-500">฿{(parseFloat(p.money) || 0).toLocaleString()}</span></div>))}
             <p className="text-gray-500 text-xs mt-2">{players.length} player{players.length !== 1 ? 's' : ''} in lobby</p>
           </div>
         )}
@@ -245,8 +245,8 @@ export default function MCControlRoom() {
       {phase === 'year_intro' && (() => {
         const introText = YEAR_INTRO_TEXT[round] || { title: `ปีที่ ${round}`, subtitle: '' };
         return (
-          <div className="rounded-lg p-3 mb-3" style={{ background: 'rgba(0,255,178,0.05)', border: '1px solid rgba(0,255,178,0.15)' }}>
-            <p className="text-sm font-bold text-[#00FFB2] mb-1">📅 ปีที่ {round} — {introText.title}</p>
+          <div className="rounded-lg p-3 mb-3" style={{ background: 'rgba(var(--mw-violet-rgb),0.05)', border: '1px solid rgba(var(--mw-violet-rgb),0.15)' }}>
+            <p className="text-sm font-bold text-neon-green mb-1">📅 ปีที่ {round} — {introText.title}</p>
             <p className="text-xs text-gray-400">{introText.subtitle}</p>
             <p className="text-xs text-gray-500 mt-2">เด็กๆ เห็น &quot;ปีที่ {round}&quot; บนจอใหญ่ — พูดแนะนำว่าปีนี้จะทำอะไรบ้าง แล้วกด Next</p>
           </div>
@@ -278,19 +278,19 @@ export default function MCControlRoom() {
         }).sort((a, b) => { if (a.submitted && !b.submitted) return -1; if (!a.submitted && b.submitted) return 1; return 0; });
 
         return (
-          <div className="rounded-lg p-3 mb-3" style={{ background: '#00D4FF15', border: '1px solid #00D4FF30' }}>
+          <div className="rounded-lg p-3 mb-3" style={{ background: 'var(--mw-rose)15', border: '1px solid var(--mw-rose)30' }}>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-mono" style={{ color: '#00D4FF' }}>📊 Portfolio Submitted</span>
-              <span className="text-lg font-bold font-mono" style={{ color: '#00FFB2' }}>{submittedCount}/{players.length}</span>
+              <span className="text-sm font-mono" style={{ color: 'var(--mw-rose)' }}>📊 Portfolio Submitted</span>
+              <span className="text-lg font-bold font-mono" style={{ color: 'var(--mw-violet)' }}>{submittedCount}/{players.length}</span>
             </div>
             {submittedCount < players.length && <p className="text-xs mb-2" style={{ color: '#ffffff40' }}>กด Next Phase ได้เลย — คนที่ไม่ส่ง = เงินไม่ลงทุนรอบนี้</p>}
-            {submittedCount === players.length && players.length > 0 && <p className="text-xs mb-2" style={{ color: '#00FFB2' }}>✓ ทุกคนส่งแล้ว!</p>}
+            {submittedCount === players.length && players.length > 0 && <p className="text-xs mb-2" style={{ color: 'var(--mw-violet)' }}>✓ ทุกคนส่งแล้ว!</p>}
             {/* Player list */}
             <div className="rounded-md overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="max-h-48 overflow-y-auto">
                 {playerInvestList.map((p) => (
                   <div key={p.id} className="flex items-center px-2 py-1.5 gap-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <span className="text-xs flex-shrink-0" style={{ color: p.submitted ? '#00FFB2' : 'rgba(255,255,255,0.25)' }}>{p.submitted ? '✅' : '⏳'}</span>
+                    <span className="text-xs flex-shrink-0" style={{ color: p.submitted ? 'var(--mw-violet)' : 'rgba(255,255,255,0.25)' }}>{p.submitted ? '✅' : '⏳'}</span>
                     <span className="text-xs w-20 truncate" style={{ color: p.submitted ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.4)' }}>{p.name}</span>
                     {/* Mini portfolio bar */}
                     {p.submitted && p.invested.length > 0 ? (
@@ -330,14 +330,14 @@ export default function MCControlRoom() {
           <div className="rounded-lg p-3 mb-3" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)' }}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-mono" style={{ color: '#F59E0B' }}>🃏 Chance Card</span>
-              <span className="text-lg font-bold font-mono" style={{ color: '#00FFB2' }}>
+              <span className="text-lg font-bold font-mono" style={{ color: 'var(--mw-violet)' }}>
                 {openedCount}/{players.length}
                 <span className="text-xs text-gray-500 ml-1">เปิดแล้ว</span>
               </span>
             </div>
             <div className="flex justify-around mt-2 mb-2">
               <div className="text-center">
-                <div className="text-sm font-bold" style={{ color: '#00FFB2' }}>{positiveCount}</div>
+                <div className="text-sm font-bold" style={{ color: 'var(--mw-violet)' }}>{positiveCount}</div>
                 <div className="text-[10px] text-gray-500">ได้เงิน</div>
               </div>
               <div className="text-center">
@@ -345,25 +345,25 @@ export default function MCControlRoom() {
                 <div className="text-[10px] text-gray-500">เสียเงิน</div>
               </div>
               <div className="text-center">
-                <div className="text-sm font-bold" style={{ color: totalChange >= 0 ? '#00FFB2' : '#EF4444' }}>
+                <div className="text-sm font-bold" style={{ color: totalChange >= 0 ? 'var(--mw-violet)' : '#EF4444' }}>
                   {totalChange >= 0 ? '+' : '-'}฿{Math.abs(totalChange).toLocaleString()}
                 </div>
                 <div className="text-[10px] text-gray-500">รวม</div>
               </div>
             </div>
             {openedCount < players.length && <p className="text-xs mb-2" style={{ color: '#ffffff40' }}>กด Next ได้เลย — คนที่ไม่เปิด = ไม่ได้/เสียเงิน</p>}
-            {openedCount === players.length && players.length > 0 && <p className="text-xs mb-2" style={{ color: '#00FFB2' }}>✓ ทุกคนเปิดแล้ว!</p>}
+            {openedCount === players.length && players.length > 0 && <p className="text-xs mb-2" style={{ color: 'var(--mw-violet)' }}>✓ ทุกคนเปิดแล้ว!</p>}
             {/* Player list */}
             <div className="rounded-md overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="max-h-48 overflow-y-auto">
                 {playerCardList.map((p) => (
                   <div key={p.id} className="flex items-center justify-between px-2 py-1.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs" style={{ color: p.opened ? '#00FFB2' : 'rgba(255,255,255,0.25)' }}>{p.opened ? '✅' : '⏳'}</span>
+                      <span className="text-xs" style={{ color: p.opened ? 'var(--mw-violet)' : 'rgba(255,255,255,0.25)' }}>{p.opened ? '✅' : '⏳'}</span>
                       <span className="text-xs" style={{ color: p.opened ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.4)' }}>{p.name}</span>
                     </div>
                     {p.opened ? (
-                      <span className="text-xs font-bold" style={{ color: p.amount > 0 ? '#00FFB2' : p.amount < 0 ? '#EF4444' : '#F59E0B' }}>
+                      <span className="text-xs font-bold" style={{ color: p.amount > 0 ? 'var(--mw-violet)' : p.amount < 0 ? '#EF4444' : '#F59E0B' }}>
                         {p.amount > 0 ? '+' : p.amount < 0 ? '-' : ''}฿{Math.abs(p.amount).toLocaleString()}
                       </span>
                     ) : (
@@ -379,7 +379,7 @@ export default function MCControlRoom() {
 
       {/* Timer */}
       {timerDuration > 0 && phase !== 'lobby' && !isFinal && (
-        <div className="flex items-center gap-3 bg-[#161b22] rounded-lg px-4 py-3 mb-3">
+        <div className="flex items-center gap-3 bg-[var(--mw-surface)] rounded-lg px-4 py-3 mb-3">
           <div className="flex-1 h-2 bg-[#2a2d35] rounded-full overflow-hidden"><div className="h-full rounded-full transition-all duration-1000" style={{ width: `${timerPercent}%`, backgroundColor: getTimerColor() }} /></div>
           <span className={`font-mono text-lg font-bold min-w-[50px] text-right ${timeLeft <= 10 && timeLeft > 0 ? 'animate-pulse' : ''}`} style={{ color: getTimerColor() }}>{formatTime(timeLeft)}</span>
         </div>
@@ -387,7 +387,7 @@ export default function MCControlRoom() {
 
       {/* MC Tip */}
       {phase !== 'year_intro' && phase !== 'market_open' && (
-        <div className="border-l-4 border-[#00D4FF] bg-[#1a1f2e] rounded-r-lg p-3 mb-3">
+        <div className="border-l-4 border-neon-cyan bg-[#1a1f2e] rounded-r-lg p-3 mb-3">
           <p className="text-gray-400 text-sm">💡 {phaseInfo.mcTip}</p>
           {MC_TIPS[round] && phase !== 'lobby' && !isFinal && <p className="text-gray-500 text-xs mt-1">📌 Round tip: {MC_TIPS[round]}</p>}
         </div>
@@ -395,7 +395,7 @@ export default function MCControlRoom() {
 
       {/* === Event info for MC === */}
       {phase === 'event' && EVENTS[round - 1] && (
-        <div className="bg-[#161b22] rounded-lg p-3 mb-3 border border-[#FF6B6B]/30">
+        <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3 border border-[#FF6B6B]/30">
           <p className="text-[#FF6B6B] text-sm font-bold">{EVENTS[round - 1].emoji} {EVENTS[round - 1].title}</p>
           <p className="text-gray-400 text-xs mt-1">{EVENTS[round - 1].description}</p>
         </div>
@@ -403,8 +403,8 @@ export default function MCControlRoom() {
 
       {/* === Event Result return table === */}
       {phase === 'event_result' && EVENTS[round - 1] && (
-        <div className="bg-[#161b22] rounded-lg p-3 mb-3 border border-[#00D4FF]/30">
-          <p className="text-[#00D4FF] text-sm font-bold mb-2">📊 Market Impact — Round {round}</p>
+        <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3 border border-neon-cyan/30">
+          <p className="text-neon-cyan text-sm font-bold mb-2">📊 Market Impact — Round {round}</p>
           <div className="grid grid-cols-2 gap-1">{COMPANIES.map((c) => { const returnPct = RETURN_TABLE[c.id]?.[round - 1] || 0; return (<div key={c.id} className="flex justify-between text-xs py-0.5"><span style={{ color: c.color }}>{c.name}</span><span style={{ color: returnPct >= 0 ? '#22c55e' : '#ef4444' }}>{returnPct > 0 ? '+' : ''}{returnPct}%</span></div>); })}</div>
         </div>
       )}
@@ -425,22 +425,22 @@ export default function MCControlRoom() {
           { key: 'final_ranking', label: '③ Ranking' },
         ];
         return (
-          <div className="bg-[#161b22] rounded-lg p-3 mb-3 border border-[#00FFB2]/30">
-            <p className="text-[#00FFB2] text-sm font-bold mb-2">🏆 Final — คุมจังหวะ Step</p>
+          <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3 border border-neon-green/30">
+            <p className="text-neon-green text-sm font-bold mb-2">🏆 Final — คุมจังหวะ Step</p>
             <div className="flex items-center gap-2 mb-2">
               <button onClick={() => idx > 0 && handleSetFinal(order[idx - 1])} disabled={idx <= 0 || actionLoading} className="px-3 py-2 rounded-lg border border-white/15 text-white disabled:opacity-30">◀</button>
               <div className="flex gap-2 flex-1">
                 {stepBtns.map((b) => {
                   const active = phase === b.key;
                   return (
-                    <button key={b.key} onClick={() => handleSetFinal(b.key)} disabled={actionLoading} className="flex-1 px-2 py-2 rounded-lg text-sm font-semibold border" style={{ background: active ? 'rgba(0,255,178,0.15)' : '#0d1117', borderColor: active ? '#00FFB2' : 'rgba(255,255,255,0.12)', color: active ? '#fff' : 'rgba(255,255,255,0.7)' }}>{b.label}</button>
+                    <button key={b.key} onClick={() => handleSetFinal(b.key)} disabled={actionLoading} className="flex-1 px-2 py-2 rounded-lg text-sm font-semibold border" style={{ background: active ? 'rgba(var(--mw-violet-rgb),0.15)' : 'var(--mw-base)', borderColor: active ? 'var(--mw-violet)' : 'rgba(255,255,255,0.12)', color: active ? '#fff' : 'rgba(255,255,255,0.7)' }}>{b.label}</button>
                   );
                 })}
               </div>
               <button onClick={() => idx < order.length - 1 && handleSetFinal(order[idx + 1])} disabled={idx >= order.length - 1 || actionLoading} className="px-3 py-2 rounded-lg border border-white/15 text-white disabled:opacity-30">▶</button>
             </div>
             {phase === 'final' ? (
-              <button onClick={() => handleSetFinal('final_podium')} disabled={actionLoading} className="w-full py-2.5 rounded-lg font-bold text-[#04210f]" style={{ background: 'linear-gradient(135deg,#00FFB2,#22c55e)' }}>🎉 เฉลยแชมป์ · Reveal champion</button>
+              <button onClick={() => handleSetFinal('final_podium')} disabled={actionLoading} className="w-full py-2.5 rounded-lg font-bold text-[#04210f]" style={{ background: 'linear-gradient(135deg,var(--mw-violet),#22c55e)' }}>🎉 เฉลยแชมป์ · Reveal champion</button>
             ) : (
               <button onClick={() => handleSetFinal(phase)} disabled={actionLoading} className="w-full py-2.5 rounded-lg font-bold text-[#FCD34D] border border-[#FCD34D]/40">▶ เล่น animation ใหม่</button>
             )}
@@ -457,7 +457,7 @@ export default function MCControlRoom() {
 
       {/* Action Buttons */}
       <div className="space-y-2">
-        {phase === 'lobby' && <button onClick={() => handleAction('start')} disabled={actionLoading || players.length === 0} className="w-full py-3 rounded-lg font-bold text-[#0D1117] bg-[#00FFB2] hover:bg-[#00FFB2]/90 disabled:opacity-50 disabled:cursor-not-allowed">{actionLoading ? 'Starting...' : `Start Game (${players.length} players)`}</button>}
+        {phase === 'lobby' && <button onClick={() => handleAction('start')} disabled={actionLoading || players.length === 0} className="w-full py-3 rounded-lg font-bold text-[color:var(--mw-base)] bg-neon-green hover:bg-neon-green/90 disabled:opacity-50 disabled:cursor-not-allowed">{actionLoading ? 'Starting...' : `Start Game (${players.length} players)`}</button>}
 
         {room.status === 'playing' && phase !== 'final' && (() => {
           const isLeaderboard = phase === 'leaderboard';
@@ -470,7 +470,7 @@ export default function MCControlRoom() {
             const nextName = next ? (PHASE_DISPLAY[next.phase]?.name || next.phase) : 'End';
             nextLabel = `Next → ${nextName}`;
           }
-          return <button onClick={() => handleAction('next')} disabled={actionLoading} className="w-full py-3 rounded-lg font-bold text-[#0D1117] bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:opacity-50">{actionLoading ? 'Loading...' : nextLabel}</button>;
+          return <button onClick={() => handleAction('next')} disabled={actionLoading} className="w-full py-3 rounded-lg font-bold text-[color:var(--mw-base)] bg-neon-cyan hover:bg-neon-cyan/90 disabled:opacity-50">{actionLoading ? 'Loading...' : nextLabel}</button>;
         })()}
 
         {room.status === 'playing' && phase !== 'final' && (

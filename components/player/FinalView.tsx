@@ -1,7 +1,7 @@
 // FILE: components/player/FinalView.tsx — Player Final Phase
-// VERSION: B18-v1 — rank via compareForRank; awards via single-winner Quiz Master
-// LAST MODIFIED: 11 Jun 2026
-// HISTORY: B7 created (rank + profit + bars + top5) | B8R extracted to component | B11 stats + badge | B13 chance card stats + ปี labels | B15 co-winner names | B16d fix co-winner filter | B18 compareForRank
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 
 import { STARTING_MONEY, TOTAL_ROUNDS } from '@/lib/constants';
 import { compareForRank } from '@/lib/ranking';
@@ -95,11 +95,11 @@ export default function FinalView({ player, players }: FinalViewProps) {
       )}
 
       {/* === Your Stats — ✅ B13: เปลี่ยน duel → chance card === */}
-      <div className="bg-[#161b22] rounded-lg p-3 mb-4">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-4">
         <div className="text-xs tracking-widest text-gray-500 mb-2">YOUR STATS</div>
         <div className="grid grid-cols-2 gap-3">
           <div className="text-center">
-            <div className="text-lg font-bold" style={{ color: '#00D4FF' }}>
+            <div className="text-lg font-bold" style={{ color: 'var(--mw-rose)' }}>
               {stats.quizCorrect}/{stats.quizTotal}
             </div>
             <div className="text-xs text-gray-500">Quiz ถูก</div>
@@ -114,7 +114,7 @@ export default function FinalView({ player, players }: FinalViewProps) {
       </div>
 
       {/* Round-by-round bars — ✅ B13: R → ปี */}
-      <div className="bg-[#161b22] rounded-lg p-3 mb-4">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-4">
         <div className="text-xs tracking-widest text-gray-500 mb-2">ผลตอบแทนรายปี</div>
         <div className="flex items-end justify-around gap-1" style={{ height: '80px' }}>
           {roundBars.map((bar) => {
@@ -138,7 +138,7 @@ export default function FinalView({ player, players }: FinalViewProps) {
       </div>
 
       {/* Top 5 */}
-      <div className="bg-[#161b22] rounded-lg p-3 mb-4">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-4">
         <div className="text-xs tracking-widest text-gray-500 mb-2">TOP 5</div>
         <div className="space-y-1">
           {top5.map((p, i) => {

@@ -1,7 +1,7 @@
 // FILE: components/player/ResultsPanel.tsx
-// VERSION: B13-BATCH2-v1 — Chance card replaces duel
-// LAST MODIFIED: 26 Mar 2026
-// HISTORY: B5 created | B9 duel badge | B9-v2 combined summary | B13-BATCH2 chance card replaces duel
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { COMPANIES, RETURN_TABLE } from '@/lib/constants';
@@ -18,10 +18,10 @@ export default function ResultsPanel({ round, player }: ResultsPanelProps) {
   // ถ้ายังไม่ได้คำนวณ (auto-calculate อาจยังไม่เสร็จ)
   if (!roundReturns) {
     return (
-      <div className="bg-[#161b22] rounded-lg p-6 text-center">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-6 text-center">
         <div className="text-3xl mb-2">📊</div>
         <p className="text-gray-400">Calculating your returns...</p>
-        <div className="mt-3 w-8 h-8 border-2 border-[#00D4FF] border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="mt-3 w-8 h-8 border-2 border-neon-cyan border-t-transparent rounded-full animate-spin mx-auto" />
       </div>
     );
   }
@@ -57,13 +57,13 @@ export default function ResultsPanel({ round, player }: ResultsPanelProps) {
     <div>
       {/* Header */}
       <div className="text-center mb-3">
-        <span className="text-xs tracking-widest" style={{ color: '#00D4FF' }}>
+        <span className="text-xs tracking-widest" style={{ color: 'var(--mw-rose)' }}>
           ROUND {round} RESULTS
         </span>
       </div>
 
       {/* ✅ B13: Combined Total Card — หุ้น + chance card */}
-      <div className="bg-[#161b22] rounded-lg p-4 text-center mb-3">
+      <div className="bg-[var(--mw-surface)] rounded-lg p-4 text-center mb-3">
         <div className="text-xs text-gray-500 mb-2">รวมรอบนี้</div>
         <div
           className="text-3xl font-bold"
@@ -117,7 +117,7 @@ export default function ResultsPanel({ round, player }: ResultsPanelProps) {
           return (
             <div
               key={c.id}
-              className="bg-[#161b22] rounded-lg px-3 py-2.5 flex items-center justify-between"
+              className="bg-[var(--mw-surface)] rounded-lg px-3 py-2.5 flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
                 <div
@@ -144,7 +144,7 @@ export default function ResultsPanel({ round, player }: ResultsPanelProps) {
 
         {/* Cash row */}
         {cashPct > 0 && (
-          <div className="bg-[#161b22] rounded-lg px-3 py-2.5 flex items-center justify-between opacity-50">
+          <div className="bg-[var(--mw-surface)] rounded-lg px-3 py-2.5 flex items-center justify-between opacity-50">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full flex-shrink-0 bg-gray-600" />
               <span className="text-sm text-gray-400">Cash</span>
@@ -159,7 +159,7 @@ export default function ResultsPanel({ round, player }: ResultsPanelProps) {
 
         {/* ไม่ได้ลงทุนเลย */}
         {investedCompanies.length === 0 && (
-          <div className="bg-[#161b22] rounded-lg p-4 text-center">
+          <div className="bg-[var(--mw-surface)] rounded-lg p-4 text-center">
             <p className="text-gray-500 text-sm">You didn&apos;t invest this round</p>
             <p className="text-gray-600 text-xs mt-1">Cash earns 0% return</p>
           </div>

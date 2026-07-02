@@ -1,7 +1,7 @@
 // FILE: components/mc/ResultsMC.tsx — MC Results Summary + Player List
-// VERSION: B13-BATCH3-v2 — Show stock vs chance card breakdown
-// LAST MODIFIED: 26 Mar 2026
-// HISTORY: B5 created (inline) | B7 added player list | B8R extracted to component | B9 include duel money | B13-BATCH2 chance card replaces duel | B13-BATCH3-v2 stock vs card breakdown
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 interface ResultsMCProps {
@@ -30,7 +30,7 @@ export default function ResultsMC({ round, players }: ResultsMCProps) {
   const evenCount = profits.filter(p => p === 0).length;
 
   return (
-    <div className="bg-[#161b22] rounded-lg p-3 mb-3 border border-[#22c55e]/30">
+    <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3 border border-[#22c55e]/30">
       <p className="text-[#22c55e] text-sm font-bold mb-2">💰 Round {round} Results</p>
       <div className="flex justify-between text-xs mb-2 pb-2 border-b border-gray-800">
         <span className="text-gray-400">Avg: <span style={{ color: avg >= 0 ? '#22c55e' : '#ef4444' }}>{avg >= 0 ? '+' : '-'}฿{Math.abs(avg).toLocaleString()}</span></span>

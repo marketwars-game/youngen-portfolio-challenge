@@ -1,7 +1,7 @@
 // FILE: components/debug/DebugPanel.tsx — fixed-corner debug overlay (perf test)
-// VERSION: perf-v1 — renders only when ?debug=1; pointer-events none so it never blocks taps
-// LAST MODIFIED: 12 Jun 2026
-// HISTORY: perf-v1 created (Season 2 load-test instrumentation)
+// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
 'use client';
 
 import { useDebug } from '@/lib/debug';
@@ -37,13 +37,13 @@ export default function DebugPanel({
         font: '11px/1.5 ui-monospace, monospace',
         padding: '8px 10px',
         borderRadius: 8,
-        border: '1px solid rgba(0,255,178,0.4)',
+        border: '1px solid rgba(var(--mw-violet-rgb),0.4)',
         minWidth: 180,
         maxWidth: 280,
         pointerEvents: 'none',
       }}
     >
-      <div style={{ color: '#00FFB2', fontWeight: 700, marginBottom: 4 }}>🐞 {title}</div>
+      <div style={{ color: 'var(--mw-violet)', fontWeight: 700, marginBottom: 4 }}>🐞 {title}</div>
       {Object.entries(stats).map(([k, v]) => (
         <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
           <span style={{ color: 'rgba(255,255,255,0.55)' }}>{k}</span>
