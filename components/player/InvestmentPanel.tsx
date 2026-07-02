@@ -1,10 +1,11 @@
 // FILE: components/player/InvestmentPanel.tsx — Team allocation UI (asset classes)
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// VERSION: YG-V3 — crypto 20% cap removed (cap machinery retained, generic; none capped) + submit is FINAL (Edit button removed)
 //   • Renders the asset classes available THIS challenge (getAvailableAssets(round)) — progressive unlock
-//   • Per-asset cap clamp (crypto ≤ 20%)
+//   • Per-asset cap clamp (generic via getAssetCap; renders + clamps only when an asset defines a cap — none as of YG-V3)
 //   • Weights must total EXACTLY 100% before submit (no leftover-cash; Cash is its own asset)
+//   • YG-V3: once submitted, allocation is locked — no re-edit (submitted state resets next round on remount)
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V3 cap removed
 
 'use client';
 
@@ -145,11 +146,6 @@ export default function InvestmentPanel({
     }
   };
 
-  const handleEdit = () => {
-    setSubmitted(false);
-    setError('');
-  };
-
   // ========== Submitted state ==========
   if (submitted) {
     return (
@@ -193,13 +189,12 @@ export default function InvestmentPanel({
           </div>
         </div>
 
-        <button
-          onClick={handleEdit}
-          className="w-full py-3 rounded-lg font-mono text-sm tracking-wider transition-all"
-          style={{ background: '#ffffff10', color: '#ffffff60', border: '1px solid #ffffff15' }}
+        <div
+          className="w-full py-3 rounded-lg font-mono text-xs tracking-wider text-center"
+          style={{ background: '#ffffff08', color: '#ffffff45', border: '1px solid #ffffff10' }}
         >
-          ✏️ EDIT ALLOCATION
-        </button>
+          🔒 Allocation locked
+        </div>
       </div>
     );
   }

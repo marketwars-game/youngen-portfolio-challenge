@@ -1,11 +1,11 @@
 // FILE: lib/constants.ts — Game Configuration (Single Source of Truth)
-// VERSION: YG-V0 — Forked from market-wars @ B20-stable for KKP YoungGen Portfolio Challenge
+// VERSION: YG-V3 — allocation step 10% → 5% + removed crypto 20% cap (both team decisions)
 //   • 6 Thai sectors → 8 asset classes (EN) · RETURN_TABLE 6x6 → 8x7
 //   • STARTING_MONEY 10,000 → 1,000,000 · TOTAL_ROUNDS 6 → 7
-//   • NEW: AVAILABLE_ASSETS (progressive unlock) + per-asset cap (crypto ≤20%)
+//   • NEW: AVAILABLE_ASSETS (progressive unlock) + per-asset cap mechanism (generic; no asset capped as of YG-V3)
 //   • Quiz/Chance/Golden constants kept (imported by dormant components) but their phases are removed in game-engine
-// LAST MODIFIED: 01 Jul 2026
-// HISTORY: market-wars B1..B20 (see main repo) | YG-V0 fork: asset classes + scripted 8x7 returns + 1M capital + 7 challenges + unlock/cap
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (see main repo) | YG-V0 fork: asset classes + scripted 8x7 returns + 1M capital + 7 challenges + unlock/cap | YG-V3: allocation step 5% + crypto cap removed
 
 // ==============================================
 // KKP YoungGen 2026 — Portfolio Challenge
@@ -20,12 +20,12 @@ export type LocalizedText = { th: string; en: string };
 export const MAX_PLAYERS = 60;              // teams (1 device = 1 team)
 export const TOTAL_ROUNDS = 7;              // 7 challenges
 export const STARTING_MONEY = 1000000;      // ฿1,000,000 virtual capital
-export const ALLOCATION_STEP = 10;          // 10% steps (V.0 — 1% steps deferred to V.1)
+export const ALLOCATION_STEP = 5;           // 5% steps (YG-V3 — team decision; brief spec 1% deferred)
 
 // ==============================================
 // 8 Asset Classes (exported as COMPANIES to reuse the existing engine/routes unchanged)
 //   id            → stable key used in portfolio / RETURN_TABLE / round_returns
-//   cap           → optional single-asset max % (crypto = 20)
+//   cap           → optional single-asset max % (none set as of YG-V3; add per asset if a cap is needed)
 //   unlockRound   → first challenge the asset is selectable (documentation; source of truth = AVAILABLE_ASSETS)
 // ==============================================
 export const COMPANIES = [
@@ -100,9 +100,8 @@ export const COMPANIES = [
     risk: 'Very High',
     color: '#F59E0B',
     icon: '🪙',
-    description: 'Bitcoin + Ether basket. Extreme volatility — max 20%. (Unlocks Challenge 6)',
+    description: 'Bitcoin + Ether basket. Extreme volatility. (Unlocks Challenge 6)',
     unlockRound: 6,
-    cap: 20,
   },
 ];
 

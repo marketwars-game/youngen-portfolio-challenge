@@ -1,5 +1,10 @@
+// FILE: app/api/players/portfolio/route.ts — Save team allocation (PATCH)
+// VERSION: YG-V3 — allocation step validation now derives from ALLOCATION_STEP (was hardcoded % 10 → rejected 5% steps)
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V3 step-validation fix
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { ALLOCATION_STEP } from '@/lib/constants';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,12 +33,12 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Validate all values are multiples of 10, between 0-100
+    // Validate all values are multiples of ALLOCATION_STEP, between 0-100
     const values = Object.values(portfolio) as number[];
     for (const val of values) {
-      if (typeof val !== 'number' || val < 0 || val > 100 || val % 10 !== 0) {
+      if (typeof val !== 'number' || val < 0 || val > 100 || val % ALLOCATION_STEP !== 0) {
         return NextResponse.json(
-          { error: 'Each allocation must be a multiple of 10 between 0 and 100' },
+          { error: `Each allocation must be a multiple of ${ALLOCATION_STEP}% between 0 and 100` },
           { status: 400 }
         );
       }

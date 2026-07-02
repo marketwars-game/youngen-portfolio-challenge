@@ -1,10 +1,10 @@
 // FILE: components/display/EventDisplay.tsx — Display Event + Event Result
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// VERSION: YG-V3 — filter to unlocked assets (no phantom 0% oil/crypto on locked challenges) + EN-only pass
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V3 unlock filter + EN
 'use client';
 
-import { COMPANIES, EVENTS, RETURN_TABLE } from '@/lib/constants';
+import { EVENTS, RETURN_TABLE, getAvailableAssets } from '@/lib/constants';
 import AnimatedBackdrop from '@/components/display/AnimatedBackdrop';
 
 interface EventDisplayProps {
@@ -15,7 +15,7 @@ interface EventDisplayProps {
 
 export default function EventDisplay({ round, phase, players }: EventDisplayProps) {
 
-  // === Event Reveal — B15-v2: dramatic เต็มจอ + radial glow ===
+  // === Event Reveal — full-screen dramatic + radial glow ===
   if (phase === 'event' && EVENTS[round - 1]) {
     const ev = EVENTS[round - 1];
     return (
@@ -37,19 +37,19 @@ export default function EventDisplay({ round, phase, players }: EventDisplayProp
           <h3 className="ev-anim text-5xl font-black mb-5" style={{ color: '#FF6B6B', animationDelay: '0.6s' }}>{ev.title}</h3>
           <p className="ev-anim text-2xl leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)', animationDelay: '0.9s' }}>{ev.description}</p>
           <div className="ev-anim mt-8 inline-block px-6 py-2 rounded-full text-base font-semibold" style={{ background: 'rgba(255,107,107,0.15)', border: '1px solid rgba(255,107,107,0.35)', color: '#FF6B6B', animationDelay: '1.2s' }}>
-            รอดูผลกระทบ →
+            Watch the impact →
           </div>
         </div>
       </div>
     );
   }
 
-  // === Event Result — B15-v2: news bar ใหญ่ขึ้น + 3x2 grid ===
+  // === Event Result — large news bar + returns grid (unlocked assets only) ===
   if (phase === 'event_result' && EVENTS[round - 1]) {
     const ev = EVENTS[round - 1];
     return (
       <div className="w-full h-full flex flex-col">
-        {/* News bar — B15-v2: ใหญ่ขึ้นมาก */}
+        {/* News bar */}
         <div className="flex items-center gap-4 px-8 py-5 flex-shrink-0" style={{ background: 'var(--mw-surface)', borderBottom: '2px solid rgba(255,107,107,0.3)' }}>
           <span className="text-4xl flex-shrink-0">{ev.emoji}</span>
           <div>
@@ -62,7 +62,8 @@ export default function EventDisplay({ round, phase, players }: EventDisplayProp
         <div className="flex-1 flex items-center justify-center px-8">
           <style>{`@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } } .return-card { opacity: 0; animation: fadeSlideUp 0.4s ease-out forwards; }`}</style>
           <div className="grid grid-cols-3 gap-4 w-full max-w-2xl">
-            {COMPANIES.map((c, i) => {
+            {/* YG-V3: show ONLY assets unlocked this challenge — locked oil/crypto no longer render as phantom 0% cards */}
+            {getAvailableAssets(round).map((c, i) => {
               const returnPct = RETURN_TABLE[c.id]?.[round - 1] || 0;
               const isPositive = returnPct >= 0;
               return (
@@ -88,7 +89,7 @@ export default function EventDisplay({ round, phase, players }: EventDisplayProp
         <div className="text-center">
           <div className="text-8xl mb-6">⭐</div>
           <h3 className="text-5xl font-black mb-4" style={{ color: '#FFD700' }}>Golden Deal!</h3>
-          <p className="text-2xl" style={{ color: 'rgba(255,255,255,0.75)' }}>โอกาสพิเศษประจำปีนี้</p>
+          <p className="text-2xl" style={{ color: 'rgba(255,255,255,0.75)' }}>A special opportunity this challenge</p>
         </div>
       </div>
     );
