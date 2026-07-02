@@ -1,10 +1,10 @@
 # YoungGen Portfolio Challenge — File Registry
 
 **Location:** วางที่ root ของ repo (`/FILE_REGISTRY.md`) — version control โดย git
-**Last Updated:** YG-V2 (re-theme + fit-to-screen) — 02 Jul 2026
+**Last Updated:** YG-V4 (timers removed + reveal phase) — 02 Jul 2026
 **Repo:** https://github.com/marketwars-game/youngen-portfolio-challenge
 **Default branch:** `main`
-**Latest tag:** `YG-V2`
+**Latest tag:** `YG-V4`
 **Forked from:** `market-wars @ B20-stable` (Dime! Kids Camp) — แชร์ engine/DB/routes, แตกต่างที่ content / phase flow / asset config
 
 ---
@@ -36,6 +36,25 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 
 ---
 
+## 🔧 ไฟล์ที่แก้ใน YG-V4 (timers removed + reveal phase — 7 ไฟล์: 6 แก้ + 1 ใหม่)
+| ไฟล์ | แก้อะไร |
+|------|---------|
+| `lib/constants.ts` | `PHASE_TIMERS = {}` (timer หมด) · `invest.hasTimer:false` · เพิ่ม `PHASE_DISPLAY.reveal` · reveal เข้า STEP_GROUPS |
+| `lib/game-engine.ts` | แทรก `'reveal'` หลัง `'invest'` ใน getPhaseOrder |
+| `components/display/LiveNameBoard.tsx` | invest variant masked (✓ only) · reveal variant (bars ครบ) · legend unlocked assets · EN |
+| `components/display/InvestDisplay.tsx` | header (masked semantics) |
+| `components/display/RevealDisplay.tsx` 🆕 | ใหม่ — LiveNameBoard variant reveal |
+| `app/display/[roomId]/page.tsx` | import RevealDisplay + branch `reveal` |
+| `app/mc/[roomId]/page.tsx` | next button "🔓 Reveal Allocations" ตอน invest + EN challenge label |
+
+## 🔧 ไฟล์ที่แก้ใน YG-V3 (config/correctness — 4 ไฟล์)
+| ไฟล์ | แก้อะไร |
+|------|---------|
+| `lib/constants.ts` | ALLOCATION_STEP 10→5 · ลบ `cap: 20` crypto + description |
+| `app/api/players/portfolio/route.ts` | validation `% 10` → `% ALLOCATION_STEP` + dynamic error msg + version header |
+| `components/player/InvestmentPanel.tsx` | เอาปุ่ม Edit + `handleEdit` ออก (submit final) · crypto cap auto-clear (generic) |
+| `components/display/EventDisplay.tsx` | `COMPANIES.map` → `getAvailableAssets(round).map` · TH→EN |
+
 ## 🔧 ไฟล์ที่แก้ใน YG-V0 (fork จาก B20-stable — 5 ไฟล์)
 
 | ไฟล์ | แก้อะไร | Raw URL |
@@ -56,8 +75,8 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 | Landing / Join | หน้าแรก join / create | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/page.tsx |
 | Player Game | จอทีม (มือถือ) — 🔧 YG-V0 | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/play/[roomId]/page.tsx |
 | MC Entry | หน้า MC เลือก/สร้างห้อง | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/mc/page.tsx |
-| MC Control | จอ MC คุมเกม | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/mc/[roomId]/page.tsx |
-| Display (Projector) | จอใหญ่ | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/display/[roomId]/page.tsx |
+| MC Control | 🔧 YG-V4 — reveal button + EN label · จอ MC คุมเกม | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/mc/[roomId]/page.tsx |
+| Display (Projector) | 🔧 YG-V4 — render reveal phase · จอใหญ่ | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/display/[roomId]/page.tsx |
 
 ### API Routes
 
@@ -66,7 +85,7 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 | Rooms | สร้าง/ปิดห้อง | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/rooms/route.ts |
 | Auth PIN | ตรวจ PIN ของ MC | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/auth/pin/route.ts |
 | Players | Join + reconnect (🔧 YG-V0: เงินเริ่ม 1,000,000) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/players/route.ts |
-| Player Portfolio | Save allocation | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/players/portfolio/route.ts |
+| Player Portfolio | 🔧 YG-V3 — step validation `% ALLOCATION_STEP` (fix 5% reject) · Save allocation | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/players/portfolio/route.ts |
 | Player Quiz | (dormant ใน YG-V0) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/players/quiz/route.ts |
 | Game Phase | Start/Next/End + auto-calc returns (loop COMPANIES → generic, ใช้ได้เลย) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/game/phase/route.ts |
 | Game Calculate | Standalone calculate (fallback) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/app/api/game/calculate/route.ts |
@@ -78,8 +97,8 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 
 | ไฟล์ | หน้าที่ | Raw URL |
 |------|--------|---------|
-| constants | 🔧 YG-V0 — asset classes / RETURN_TABLE 8×7 / unlock / cap / content | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/lib/constants.ts |
-| game-engine | 🔧 YG-V0 — phase state machine (pure allocation loop) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/lib/game-engine.ts |
+| constants | 🔧 YG-V4 — timers off + reveal phase config · (YG-V3: step 5% + crypto cap removed) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/lib/constants.ts |
+| game-engine | 🔧 YG-V4 — insert reveal phase after invest · (YG-V0: pure allocation loop) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/lib/game-engine.ts |
 | supabase | Supabase client | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/lib/supabase.ts |
 | awards | Awards (Smart Diversifier ไม่ใช้ใน V.0 แต่ยัง compile) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/lib/awards.ts |
 | ranking | comparator กลาง (จัดอันดับ) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/lib/ranking.ts |
@@ -92,7 +111,7 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 
 | ไฟล์ | หน้าที่ | Raw URL |
 |------|--------|---------|
-| InvestmentPanel | 🔧 YG-V0 — allocation 8 asset + unlock + cap + 100% gate | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/InvestmentPanel.tsx |
+| InvestmentPanel | 🔧 YG-V3 — Edit button removed (submit final) · crypto cap auto-cleared · (YG-V0: allocation 8 asset + unlock + 100% gate) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/InvestmentPanel.tsx |
 | ResultsPanel | ผลรอบ (มือถือ) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/ResultsPanel.tsx |
 | LeaderboardView | อันดับ + ตัวเอง | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/LeaderboardView.tsx |
 | FinalView | สรุป + รางวัล | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/FinalView.tsx |
@@ -110,15 +129,16 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 | LobbyDisplay | lobby (QR + teams) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LobbyDisplay.tsx |
 | YearIntroDisplay | challenge brief splash | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/YearIntroDisplay.tsx |
 | MarketOpenDisplay | market-open splash | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/MarketOpenDisplay.tsx |
-| InvestDisplay | จอลงทุน (LiveNameBoard) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/InvestDisplay.tsx |
-| EventDisplay | event + period returns | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/EventDisplay.tsx |
+| InvestDisplay | 🔧 YG-V4 — masked submit wall (LiveNameBoard invest, no bars) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/InvestDisplay.tsx |
+| RevealDisplay 🆕 | 🔧 YG-V4 — reveal phase: all teams' allocations together (LiveNameBoard reveal) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/RevealDisplay.tsx |
+| EventDisplay | 🔧 YG-V3 — filter to unlocked assets (no phantom 0% oil/crypto) + EN · (event + period returns) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/EventDisplay.tsx |
 | ResultsDisplay | heatmap ผลรอบ | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/ResultsDisplay.tsx |
 | LeaderboardDisplay | podium + ranking (racing) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LeaderboardDisplay.tsx |
 | FinalDisplay | สรุปจบเกม (router 4-step) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalDisplay.tsx |
 | FinalPodium | เฉลย 3→2→1 + confetti | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalPodium.tsx |
 | FinalAwards | รางวัล (Smart Diversifier ไม่ใช้ใน V.0) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalAwards.tsx |
 | FinalRanking | อันดับทุกทีม + benchmark (⚠️ ref `piggybank` no-op ใน V.0) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalRanking.tsx |
-| LiveNameBoard | wall ทุกทีม (invest/chance) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LiveNameBoard.tsx |
+| LiveNameBoard | 🔧 YG-V4 — invest masked + reveal variant (all allocations) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LiveNameBoard.tsx |
 | LiveNameFeed | research sidebar feed | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LiveNameFeed.tsx |
 | AnimatedBackdrop | backdrop (particle + grid + glow) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/AnimatedBackdrop.tsx |
 | ConfettiCanvas | confetti | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/ConfettiCanvas.tsx |
@@ -156,7 +176,7 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 
 | ไฟล์ | หน้าที่ |
 |------|--------|
-| `docs/YoungGen_TechSpec_v0.md` | Tech Spec (สเปกหลัก) |
+| `docs/YoungGen_TechSpec_v4.md` | Tech Spec (สเปกหลัก — current) |
 | `docs/README_YG_V0.md` | คู่มือรัน demo + deploy |
 | `docs/schema.sql` | Supabase schema (สำหรับ project แยกตอน deploy จริง) |
 
