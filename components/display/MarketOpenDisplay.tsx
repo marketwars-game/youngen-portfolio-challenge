@@ -1,15 +1,15 @@
 // FILE: components/display/MarketOpenDisplay.tsx — Display market-open splash
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// VERSION: YG-V2 — fit-to-screen (rendered inside FitStage 1280×720); retire CSS zoom
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen
 'use client';
 
 import { TOTAL_ROUNDS } from '@/lib/constants';
 import AnimatedBackdrop from '@/components/display/AnimatedBackdrop';
 
-export default function MarketOpenDisplay({ round, zoom }: { round: number; zoom: number }) {
+export default function MarketOpenDisplay({ round }: { round: number }) {
   return (
-    <div className="h-screen bg-base text-white flex flex-col items-center justify-center relative overflow-hidden" style={{ zoom }}>
+    <div className="w-full h-full bg-base text-white flex flex-col items-center justify-center relative overflow-hidden">
       <style>{`
         @keyframes moDraw { to { stroke-dashoffset: 0; } }
         @keyframes moArea { to { opacity: 0.16; } }

@@ -1,17 +1,17 @@
 // FILE: components/display/LobbyDisplay.tsx — Display lobby (QR + joined players)
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// VERSION: YG-V2 — fit-to-screen (rendered inside FitStage 1280×720); retire CSS zoom
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen
 'use client';
 
 import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import AnimatedBackdrop from '@/components/display/AnimatedBackdrop';
 
-export default function LobbyDisplay({ players, roomId, joinUrl, zoom }: { players: any[]; roomId: string; joinUrl: string; zoom: number }) {
+export default function LobbyDisplay({ players, roomId, joinUrl }: { players: any[]; roomId: string; joinUrl: string }) {
   const [qrOpen, setQrOpen] = useState(false);
   return (
-    <div className="h-screen bg-base text-white overflow-hidden relative" style={{ zoom }}>
+    <div className="w-full h-full bg-base text-white overflow-hidden relative">
       <AnimatedBackdrop accent="var(--mw-violet)" accent2="var(--mw-rose)" />
 
       <div className="relative z-10 h-full flex items-center">

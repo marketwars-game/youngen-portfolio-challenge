@@ -1,7 +1,7 @@
 // FILE: app/display/[roomId]/page.tsx — Display screen (shell)
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// VERSION: YG-V2 — fit-to-screen (FitStage 1280×720 + transform scale); retire CSS zoom
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -25,6 +25,7 @@ import MarketOpenDisplay from '@/components/display/MarketOpenDisplay';
 import InvestDisplay from '@/components/display/InvestDisplay';
 import ResultsDisplay from '@/components/display/ResultsDisplay';
 import SoundGate from '@/components/display/SoundGate';
+import FitStage from '@/components/display/FitStage';
 
 export default function DisplayScreen() {
   const params = useParams();
@@ -70,9 +71,12 @@ export default function DisplayScreen() {
     }
   }, [room?.current_phase, loading]);
 
-  // B15-v2: CSS zoom — client-side only, update on resize
+  // YG-V2: fit-to-screen scale for a fixed 1280×720 canvas (letterbox).
+  // Replaces B15-v2 CSS zoom which overflowed on non-16:9 viewports (content fell below the fold).
+  // scale = smaller of width/height ratios → always fits any screen; on a 1920×1080 projector = 1.5 (unchanged).
   useEffect(() => {
-    const updateZoom = () => setZoom(Math.min(window.innerWidth / 1280, 1.5));
+    const updateZoom = () =>
+      setZoom(Math.min(window.innerWidth / 1280, window.innerHeight / 720));
     updateZoom();
     window.addEventListener('resize', updateZoom);
     return () => window.removeEventListener('resize', updateZoom);
@@ -236,20 +240,21 @@ export default function DisplayScreen() {
 
   let content;
   if (phase === 'lobby') {
-    content = <LobbyDisplay players={players} roomId={roomId} joinUrl={joinUrl} zoom={zoom} />;
+    content = <FitStage scale={zoom}><LobbyDisplay players={players} roomId={roomId} joinUrl={joinUrl} /></FitStage>;
   } else if (phase === 'final' || phase === 'final_podium' || phase === 'final_awards' || phase === 'final_ranking') {
     content = (
-      <div className="h-screen bg-base text-white" style={{ zoom }}>
+      <FitStage scale={zoom}>
         <FinalDisplay key={`final-${replayTick}`} players={players} phase={phase as any} animate={finalAnimate} playSfx={playSfx} />
-      </div>
+      </FitStage>
     );
   } else if (phase === 'year_intro') {
-    content = <YearIntroDisplay round={round} zoom={zoom} />;
+    content = <FitStage scale={zoom}><YearIntroDisplay round={round} /></FitStage>;
   } else if (phase === 'market_open') {
-    content = <MarketOpenDisplay round={round} zoom={zoom} />;
+    content = <FitStage scale={zoom}><MarketOpenDisplay round={round} /></FitStage>;
   } else {
     content = (
-      <div className="h-screen bg-base text-white flex flex-col overflow-hidden" style={{ zoom }}>
+      <FitStage scale={zoom}>
+        <div className="w-full h-full bg-base text-white flex flex-col overflow-hidden">
         <DisplayHeader steps={stepProgress} round={round} />
         <div className="flex-1 flex flex-col items-center justify-center overflow-hidden px-6 py-3">
 
@@ -284,7 +289,8 @@ export default function DisplayScreen() {
 
           {phase === 'leaderboard' && <LeaderboardDisplay players={players} round={round} />}
         </div>
-      </div>
+        </div>
+      </FitStage>
     );
   }
 

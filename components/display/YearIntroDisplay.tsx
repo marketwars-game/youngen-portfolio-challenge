@@ -1,16 +1,16 @@
 // FILE: components/display/YearIntroDisplay.tsx — Display year-intro splash
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// VERSION: YG-V2 — fit-to-screen (rendered inside FitStage 1280×720); retire CSS zoom
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen
 'use client';
 
 import { STEP_GROUPS, YEAR_INTRO_TEXT } from '@/lib/constants';
 import AnimatedBackdrop from '@/components/display/AnimatedBackdrop';
 
-export default function YearIntroDisplay({ round, zoom }: { round: number; zoom: number }) {
+export default function YearIntroDisplay({ round }: { round: number }) {
   const introText = YEAR_INTRO_TEXT[round] || { title: `ปีที่ ${round} เริ่มแล้ว!`, subtitle: 'เตรียมตัวให้พร้อม' };
   return (
-    <div className="h-screen bg-base text-white flex flex-col items-center justify-center relative overflow-hidden" style={{ zoom }}>
+    <div className="w-full h-full bg-base text-white flex flex-col items-center justify-center relative overflow-hidden">
       <AnimatedBackdrop accent="var(--mw-violet)" accent2="var(--mw-rose)" />
       <div className="absolute font-black leading-none select-none pointer-events-none" style={{ fontSize: '320px', color: 'rgba(var(--mw-violet-rgb),0.05)', top: '50%', left: '50%', transform: 'translate(-50%,-55%)' }}>{round}</div>
       <div className="text-center z-10">
