@@ -1,10 +1,10 @@
 # YoungGen Portfolio Challenge — File Registry
 
 **Location:** วางที่ root ของ repo (`/FILE_REGISTRY.md`) — version control โดย git
-**Last Updated:** YG-V0 (MVP skeleton) — 01 Jul 2026
+**Last Updated:** YG-V2 (re-theme + fit-to-screen) — 02 Jul 2026
 **Repo:** https://github.com/marketwars-game/youngen-portfolio-challenge
 **Default branch:** `main`
-**Latest tag:** `YG-V0`
+**Latest tag:** `YG-V2`
 **Forked from:** `market-wars @ B20-stable` (Dime! Kids Camp) — แชร์ engine/DB/routes, แตกต่างที่ content / phase flow / asset config
 
 ---
@@ -123,6 +123,7 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 | AnimatedBackdrop | backdrop (particle + grid + glow) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/AnimatedBackdrop.tsx |
 | ConfettiCanvas | confetti | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/ConfettiCanvas.tsx |
 | SoundGate | ปลดล็อก autoplay | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/SoundGate.tsx |
+| FitStage | 🆕 YG-V2 canvas 1280×720 + scale (fit-to-screen wrapper ทุก phase) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FitStage.tsx |
 | ResearchDisplay | 💤 dormant | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/ResearchDisplay.tsx |
 | QuizSpeedWall | 💤 dormant | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/QuizSpeedWall.tsx |
 | ChanceCardDisplay | 💤 dormant | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/ChanceCardDisplay.tsx |
