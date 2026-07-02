@@ -1,9 +1,9 @@
 // FILE: lib/game-engine.ts — State Machine + Room Code Generator
-// VERSION: YG-V0 — Forked from market-wars @ B19-v1. Pure allocation loop: quiz/research/chance phases removed.
-//   Flow (Ch1-6): year_intro → invest → market_open → event → event_result → results → leaderboard
+// VERSION: YG-V4 — insert 'reveal' phase after 'invest' (masked submit → MC reveals all allocations together)
+//   Flow (Ch1-6): year_intro → invest → reveal → market_open → event → event_result → results → leaderboard
 //   Flow (Ch7):   ... → results → final  (skips leaderboard, MC drives podium/awards/ranking)
-// LAST MODIFIED: 01 Jul 2026
-// HISTORY: market-wars B1..B19 (see main repo) | YG-V0 fork: getPhaseOrder strips research/research_reveal/chance_card; TOTAL_ROUNDS=7
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B1..B19 (see main repo) | YG-V0 fork: getPhaseOrder strips research/research_reveal/chance_card; TOTAL_ROUNDS=7 | YG-V4 reveal phase
 
 import { ROOM_CODE_CONFIG, GOLDEN_DEAL_ROUNDS, TOTAL_ROUNDS, STEP_GROUPS } from './constants';
 
@@ -33,6 +33,7 @@ export function getPhaseOrder(round: number): string[] {
   const phases = [
     'year_intro',
     'invest',
+    'reveal',
     'market_open',
     'event',
     'event_result',

@@ -1,16 +1,16 @@
-// FILE: components/display/LiveNameBoard.tsx — Spectator name wall (invest + chance_card)
-// VERSION: B16b-v1 — fit-all roster grid, A-Z sort, degrade tiers, light-in-place
-// LAST MODIFIED: 11 Jun 2026
-// HISTORY: B16b created — shared grid wall for invest (allocation bar) + chance_card (luck amount)
+// FILE: components/display/LiveNameBoard.tsx — Spectator name wall (invest / reveal / chance_card)
+// VERSION: YG-V4 — invest variant MASKED (submit status only, no bars); new 'reveal' variant shows every team's allocation together; EN
+// LAST MODIFIED: 02 Jul 2026
+// HISTORY: market-wars B16b (shared grid wall: invest allocation bar + chance luck amount) | YG-V4 mask invest + reveal variant + EN
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { COMPANIES } from '@/lib/constants';
+import { COMPANIES, getAvailableAssets } from '@/lib/constants';
 
 interface LiveNameBoardProps {
   players: any[];
   round: number;
-  variant: 'invest' | 'chance';
+  variant: 'invest' | 'reveal' | 'chance';
 }
 
 const PAGE_SIZE = 96;
@@ -22,10 +22,10 @@ function sortByName(players: any[]) {
   );
 }
 
-function isSubmitted(p: any, round: number, variant: 'invest' | 'chance') {
-  return variant === 'invest'
-    ? p.portfolio_submitted_round === round
-    : (p.duel_submitted_round || 0) >= round;
+function isSubmitted(p: any, round: number, variant: 'invest' | 'reveal' | 'chance') {
+  return variant === 'chance'
+    ? (p.duel_submitted_round || 0) >= round
+    : p.portfolio_submitted_round === round;
 }
 
 function tierOf(n: number) {
@@ -101,22 +101,30 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
     let nameColor = 'rgba(255,255,255,0.42)';
     let detailNode: React.ReactNode = null;
 
-    if (variant === 'invest') {
+    if (variant === 'invest' || variant === 'reveal') {
       if (submitted) {
         bg = 'rgba(255,255,255,0.05)';
         nameColor = '#ffffff';
         if (tier.detail) {
-          const portfolio = p.portfolio || {};
-          const segs = COMPANIES
-            .map((c) => ({ color: c.color, pct: parseFloat(portfolio[c.id]) || 0 }))
-            .filter((s) => s.pct > 0);
-          detailNode = (
-            <div className="rounded-full overflow-hidden flex" style={{ width: '80%', height: barH, background: segs.length ? 'rgba(255,255,255,0.08)' : 'rgba(245,158,11,0.25)' }}>
-              {segs.map((s, i) => (
-                <div key={i} style={{ width: `${s.pct}%`, backgroundColor: s.color }} />
-              ))}
-            </div>
-          );
+          if (variant === 'reveal') {
+            // reveal: show the full allocation bar — every team, all at once
+            const portfolio = p.portfolio || {};
+            const segs = COMPANIES
+              .map((c) => ({ color: c.color, pct: parseFloat(portfolio[c.id]) || 0 }))
+              .filter((s) => s.pct > 0);
+            detailNode = (
+              <div className="rounded-full overflow-hidden flex" style={{ width: '80%', height: barH, background: segs.length ? 'rgba(255,255,255,0.08)' : 'rgba(245,158,11,0.25)' }}>
+                {segs.map((s, i) => (
+                  <div key={i} style={{ width: `${s.pct}%`, backgroundColor: s.color }} />
+                ))}
+              </div>
+            );
+          } else {
+            // invest: MASKED — show a submitted check only, never the allocation
+            detailNode = (
+              <span style={{ fontSize: amtSize, fontWeight: 700, lineHeight: 1, color: 'var(--mw-violet)' }}>✓</span>
+            );
+          }
         }
       } else if (tier.detail) {
         detailNode = <div className="rounded-full" style={{ width: '80%', height: barH, background: 'transparent' }} />;
@@ -159,7 +167,7 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
     );
   }
 
-  const label = variant === 'invest' ? 'จัดพอร์ตแล้ว · Submitted' : 'เปิดการ์ดแล้ว · Opened';
+  const label = variant === 'chance' ? 'Opened' : variant === 'reveal' ? 'Allocations revealed' : 'Submitted';
 
   return (
     <div className="w-full flex-1 min-h-0 flex flex-col">
@@ -183,7 +191,7 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
       {/* paginate notice */}
       {tier.paginate && pageCount > 1 && (
         <div className="flex-shrink-0 text-center rounded-md" style={{ marginBottom: 6, padding: '3px 10px', fontSize: 13, color: '#fcd34d', background: 'rgba(245,158,11,0.12)', border: '0.5px solid rgba(245,158,11,0.3)' }}>
-          {N} คน — สลับหน้า {(pageIdx % pageCount) + 1}/{pageCount} (หน้าละ {PAGE_SIZE})
+          {N} teams — page {(pageIdx % pageCount) + 1}/{pageCount} ({PAGE_SIZE} per page)
         </div>
       )}
 
@@ -199,10 +207,10 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
         {visible.map((p) => renderCell(p))}
       </div>
 
-      {/* invest legend */}
-      {variant === 'invest' && tier.detail && (
+      {/* asset legend — only when bars are visible (reveal) */}
+      {variant === 'reveal' && tier.detail && (
         <div className="flex-shrink-0 flex flex-wrap items-center justify-center" style={{ gap: 14, marginTop: 9, paddingTop: 9, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          {COMPANIES.map((c) => (
+          {getAvailableAssets(round).map((c) => (
             <div key={c.id} className="flex items-center" style={{ gap: 5 }}>
               <span style={{ width: 11, height: 11, borderRadius: 3, background: c.color, display: 'inline-block' }} />
               <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.62)' }}>{c.name}</span>

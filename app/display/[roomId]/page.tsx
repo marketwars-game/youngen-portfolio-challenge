@@ -1,7 +1,7 @@
 // FILE: app/display/[roomId]/page.tsx — Display screen (shell)
-// VERSION: YG-V2 — fit-to-screen (FitStage 1280×720 + transform scale); retire CSS zoom
+// VERSION: YG-V4 — render new 'reveal' phase (RevealDisplay); timers auto-gone via empty PHASE_TIMERS
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen | YG-V4 reveal phase branch
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -23,6 +23,7 @@ import LobbyDisplay from '@/components/display/LobbyDisplay';
 import YearIntroDisplay from '@/components/display/YearIntroDisplay';
 import MarketOpenDisplay from '@/components/display/MarketOpenDisplay';
 import InvestDisplay from '@/components/display/InvestDisplay';
+import RevealDisplay from '@/components/display/RevealDisplay';
 import ResultsDisplay from '@/components/display/ResultsDisplay';
 import SoundGate from '@/components/display/SoundGate';
 import FitStage from '@/components/display/FitStage';
@@ -275,6 +276,10 @@ export default function DisplayScreen() {
 
           {phase === 'invest' && (
             <InvestDisplay players={players} round={round} />
+          )}
+
+          {phase === 'reveal' && (
+            <RevealDisplay players={players} round={round} />
           )}
 
           {phase === 'chance_card' && <ChanceCardDisplay players={players} round={round} />}

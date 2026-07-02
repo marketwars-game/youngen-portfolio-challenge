@@ -1,11 +1,11 @@
 // FILE: lib/constants.ts — Game Configuration (Single Source of Truth)
-// VERSION: YG-V3 — allocation step 10% → 5% + removed crypto 20% cap (both team decisions)
+// VERSION: YG-V4 — timers removed (PHASE_TIMERS emptied) + new 'reveal' phase (masked submit → MC reveal)
 //   • 6 Thai sectors → 8 asset classes (EN) · RETURN_TABLE 6x6 → 8x7
 //   • STARTING_MONEY 10,000 → 1,000,000 · TOTAL_ROUNDS 6 → 7
 //   • NEW: AVAILABLE_ASSETS (progressive unlock) + per-asset cap mechanism (generic; no asset capped as of YG-V3)
 //   • Quiz/Chance/Golden constants kept (imported by dormant components) but their phases are removed in game-engine
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (see main repo) | YG-V0 fork: asset classes + scripted 8x7 returns + 1M capital + 7 challenges + unlock/cap | YG-V3: allocation step 5% + crypto cap removed
+// HISTORY: market-wars B1..B20 (see main repo) | YG-V0 fork: asset classes + scripted 8x7 returns + 1M capital + 7 challenges + unlock/cap | YG-V3: allocation step 5% + crypto cap removed | YG-V4: timers removed + reveal phase
 
 // ==============================================
 // KKP YoungGen 2026 — Portfolio Challenge
@@ -173,9 +173,8 @@ export const GAME_PHASES = [
 export const GOLDEN_DEAL_ROUNDS: number[] = [];
 
 // --- Phase Timers (seconds) — only phases where teams act ---
-export const PHASE_TIMERS: Record<string, number> = {
-  invest: 300, // 5 min to allocate across asset classes
-};
+// YG-V4: all timers removed — untimed play, MC drives pacing manually. (kept as empty map so PHASE_TIMERS[phase] === undefined → every timer guard is a no-op)
+export const PHASE_TIMERS: Record<string, number> = {};
 
 // --- Phase Display Info ---
 export const PHASE_DISPLAY: Record<string, {
@@ -207,8 +206,16 @@ export const PHASE_DISPLAY: Record<string, {
     icon: '💰',
     displayMessage: 'Teams are allocating...',
     playerMessage: 'Allocate your portfolio — weights must total 100%.',
-    mcTip: 'Teams rebalance from scratch each challenge. Next when ready.',
-    hasTimer: true,
+    mcTip: 'Teams rebalance from scratch each challenge. When all have submitted, press Reveal.',
+    hasTimer: false,
+  },
+  reveal: {
+    name: 'Reveal',
+    icon: '🔓',
+    displayMessage: 'Revealing every team\'s allocation...',
+    playerMessage: 'Allocations are on the big screen — watch together.',
+    mcTip: 'All allocations are shown together. Continue to the market when ready.',
+    hasTimer: false,
   },
   market_open: {
     name: 'Market Open',
@@ -264,7 +271,7 @@ export const PHASE_DISPLAY: Record<string, {
 // Step Groups — progress indicator (matches YG-V0 flow)
 // ==============================================
 export const STEP_GROUPS = [
-  { id: 'allocate', icon: '💰', label: 'Allocate', phases: ['year_intro', 'invest'] },
+  { id: 'allocate', icon: '💰', label: 'Allocate', phases: ['year_intro', 'invest', 'reveal'] },
   { id: 'market', icon: '📰', label: 'Market', phases: ['market_open', 'event', 'event_result'] },
   { id: 'results', icon: '📊', label: 'Results', phases: ['results'] },
   { id: 'leaderboard', icon: '🏆', label: 'Ranking', phases: ['leaderboard'] },

@@ -1,7 +1,7 @@
 // FILE: app/mc/[roomId]/page.tsx — MC Control screen
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
+// VERSION: YG-V4 — next button "🔓 Reveal Allocations" on invest (drives new reveal phase); EN challenge label; timers auto-gone
 // LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V4 reveal button + EN label
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -464,7 +464,9 @@ export default function MCControlRoom() {
           const isLastRound = round >= TOTAL_ROUNDS;
           let nextLabel = '';
           if (isLeaderboard) {
-            nextLabel = isLastRound ? 'Next → Final Summary 🏆' : `Next Year → ปีที่ ${round + 1}`;
+            nextLabel = isLastRound ? 'Next → Final Summary 🏆' : `Next → Challenge ${round + 1}`;
+          } else if (phase === 'invest') {
+            nextLabel = '🔓 Reveal Allocations';
           } else {
             const next = getNextPhase(phase, round);
             const nextName = next ? (PHASE_DISPLAY[next.phase]?.name || next.phase) : 'End';
