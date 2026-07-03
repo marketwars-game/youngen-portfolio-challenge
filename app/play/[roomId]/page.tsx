@@ -1,7 +1,7 @@
 // FILE: app/play/[roomId]/page.tsx — Player game screen
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// VERSION: YG-V5 — pass phase to FinalView (spoiler guard on final/final_podium)
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 phase→FinalView
 'use client';
 
 import { useEffect, useState, useRef, Suspense } from 'react';
@@ -202,7 +202,7 @@ function PlayerContent() {
   if (loading) return <div className="min-h-screen bg-base flex items-center justify-center"><div className="text-neon-green text-xl animate-pulse">Loading...</div></div>;
 
   const phase = room?.current_phase || 'lobby';
-  const isFinal = phase.startsWith('final'); // B16d: final / final_podium / final_awards / final_ranking
+  const isFinal = phase.startsWith('final'); // YG-V5: final / final_podium / final_ranking (Awards step cut)
   const round = room?.current_round || 1;
   const phaseInfo = PHASE_DISPLAY[phase] || PHASE_DISPLAY.lobby;
   const timerDuration = PHASE_TIMERS[phase] || 0;
@@ -415,7 +415,7 @@ function PlayerContent() {
       {phase === 'leaderboard' && <LeaderboardView player={player} players={players} round={round} />}
 
       {/* === Final — Component === */}
-      {isFinal && <FinalView player={player} players={players} />}
+      {isFinal && <FinalView player={player} players={players} phase={phase} />}
     </div>
   );
 }

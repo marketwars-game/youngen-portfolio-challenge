@@ -1,10 +1,10 @@
 # YoungGen Portfolio Challenge — File Registry
 
 **Location:** วางที่ root ของ repo (`/FILE_REGISTRY.md`) — version control โดย git
-**Last Updated:** YG-V4 (timers removed + reveal phase) — 02 Jul 2026
+**Last Updated:** YG-V5 (final rework — cut Awards step, real-teams-only ranking, mobile spoiler guard) — 03 Jul 2026
 **Repo:** https://github.com/marketwars-game/youngen-portfolio-challenge
 **Default branch:** `main`
-**Latest tag:** `YG-V4`
+**Latest tag:** `YG-V5`
 **Forked from:** `market-wars @ B20-stable` (Dime! Kids Camp) — แชร์ engine/DB/routes, แตกต่างที่ content / phase flow / asset config
 
 ---
@@ -114,7 +114,7 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 | InvestmentPanel | 🔧 YG-V3 — Edit button removed (submit final) · crypto cap auto-cleared · (YG-V0: allocation 8 asset + unlock + 100% gate) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/InvestmentPanel.tsx |
 | ResultsPanel | ผลรอบ (มือถือ) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/ResultsPanel.tsx |
 | LeaderboardView | อันดับ + ตัวเอง | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/LeaderboardView.tsx |
-| FinalView | สรุป + รางวัล | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/FinalView.tsx |
+| FinalView | สรุปจบเกม (มือถือ) — 🔧 YG-V5 spoiler guard + ตัด award badge | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/FinalView.tsx |
 | ResearchQuiz | 💤 dormant (phase ถูกตัด แต่ยัง import) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/ResearchQuiz.tsx |
 | ChanceCard | 💤 dormant | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/ChanceCard.tsx |
 | MarketFight | 💤 dormant (ไม่ import) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/player/MarketFight.tsx |
@@ -134,10 +134,10 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 | EventDisplay | 🔧 YG-V3 — filter to unlocked assets (no phantom 0% oil/crypto) + EN · (event + period returns) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/EventDisplay.tsx |
 | ResultsDisplay | heatmap ผลรอบ | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/ResultsDisplay.tsx |
 | LeaderboardDisplay | podium + ranking (racing) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LeaderboardDisplay.tsx |
-| FinalDisplay | สรุปจบเกม (router 4-step) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalDisplay.tsx |
-| FinalPodium | เฉลย 3→2→1 + confetti | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalPodium.tsx |
-| FinalAwards | รางวัล (Smart Diversifier ไม่ใช้ใน V.0) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalAwards.tsx |
-| FinalRanking | อันดับทุกทีม + benchmark (⚠️ ref `piggybank` no-op ใน V.0) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalRanking.tsx |
+| FinalDisplay | สรุปจบเกม (router **3-step**: final→podium→ranking) — 🔧 YG-V5 | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalDisplay.tsx |
+| FinalPodium | เฉลย 3→2→1 + confetti — 🔧 YG-V5 ตัด award pill | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalPodium.tsx |
+| FinalAwards | 💤 **dormant** ตั้งแต่ YG-V5 (ไม่ import — Awards step ถูกตัด) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalAwards.tsx |
+| FinalRanking | อันดับทีมจริงล้วน — 🔧 YG-V5 ตัด benchmark + Smart Diversifier (คง 🎯/🧺) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/FinalRanking.tsx |
 | LiveNameBoard | 🔧 YG-V4 — invest masked + reveal variant (all allocations) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LiveNameBoard.tsx |
 | LiveNameFeed | research sidebar feed | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/LiveNameFeed.tsx |
 | AnimatedBackdrop | backdrop (particle + grid + glow) | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/display/AnimatedBackdrop.tsx |
@@ -157,7 +157,7 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 |------|--------|---------|
 | ResultsMC | สรุปผลรอบ | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/mc/ResultsMC.tsx |
 | LeaderboardMC | ดูอันดับทุกทีม | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/mc/LeaderboardMC.tsx |
-| FinalMC | สรุปจบเกม | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/mc/FinalMC.tsx |
+| FinalMC | จอ MC ปิดเกม — 🔧 YG-V5 script 2-step + ตัด awards box | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/mc/FinalMC.tsx |
 | ResearchMC | 💤 dormant | https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/main/components/mc/ResearchMC.tsx |
 
 ---

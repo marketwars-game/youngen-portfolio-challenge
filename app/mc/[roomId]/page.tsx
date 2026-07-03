@@ -1,7 +1,7 @@
 // FILE: app/mc/[roomId]/page.tsx — MC Control screen
-// VERSION: YG-V4 — next button "🔓 Reveal Allocations" on invest (drives new reveal phase); EN challenge label; timers auto-gone
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V4 reveal button + EN label
+// VERSION: YG-V5 — final stepper: cut Awards step (① Podium → ② Ranking)
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V4 reveal button + EN label | YG-V5 cut Awards step
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -159,7 +159,7 @@ export default function MCControlRoom() {
   if (!room) return <div className="min-h-screen bg-base flex items-center justify-center"><div className="text-red-400 text-xl">Room not found</div></div>;
 
   const phase = room.current_phase || 'lobby';
-  const isFinal = phase.startsWith('final'); // B16d: final / final_podium / final_awards / final_ranking
+  const isFinal = phase.startsWith('final'); // YG-V5: final / final_podium / final_ranking (Awards step cut)
   const round = room.current_round || 1;
   const phaseInfo = PHASE_DISPLAY[phase] || PHASE_DISPLAY.lobby;
   const timerDuration = PHASE_TIMERS[phase] || 0;
@@ -417,12 +417,11 @@ export default function MCControlRoom() {
 
       {/* === B16d: Final step controls === */}
       {isFinal && (() => {
-        const order = ['final', 'final_podium', 'final_awards', 'final_ranking'];
+        const order = ['final', 'final_podium', 'final_ranking'];
         const idx = order.indexOf(phase);
         const stepBtns = [
           { key: 'final_podium', label: '① Podium' },
-          { key: 'final_awards', label: '② Awards' },
-          { key: 'final_ranking', label: '③ Ranking' },
+          { key: 'final_ranking', label: '② Ranking' },
         ];
         return (
           <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3 border border-neon-green/30">

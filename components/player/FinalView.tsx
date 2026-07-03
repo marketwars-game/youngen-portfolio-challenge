@@ -1,19 +1,39 @@
 // FILE: components/player/FinalView.tsx — Player Final Phase
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// VERSION: YG-V5 — spoiler guard (hold on final/final_podium, recap at final_ranking) + drop Smart Diversifier badge + drop dormant quiz/chance stats
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 spoiler guard + drop award + stats
 
 import { STARTING_MONEY, TOTAL_ROUNDS } from '@/lib/constants';
 import { compareForRank } from '@/lib/ranking';
-import { calculateAwards, getPlayerAwards, calcPlayerStats } from '@/lib/awards';
 
 interface FinalViewProps {
   player: any;
   players: any[];
+  phase: string;
 }
 
-export default function FinalView({ player, players }: FinalViewProps) {
+export default function FinalView({ player, players, phase }: FinalViewProps) {
   if (!player) return null;
+
+  // YG-V5: spoiler guard — while the champion is revealed on the projector (final / final_podium),
+  // hold the player's own result. Reveal the personal recap only at final_ranking.
+  if (phase === 'final' || phase === 'final_podium') {
+    return (
+      <div className="p-4 max-w-md mx-auto min-h-[70vh] flex flex-col items-center justify-center text-center">
+        <div className="text-5xl mb-4">👀</div>
+        <p className="text-lg font-bold" style={{ color: '#C4B5FD' }}>Watch the big screen</p>
+        <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          Champions are being revealed together on the projector
+        </p>
+        <div className="flex gap-1.5 mt-6">
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--mw-violet)', opacity: 0.9 }} />
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--mw-violet)', opacity: 0.5 }} />
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--mw-violet)', opacity: 0.3 }} />
+        </div>
+        <p className="text-xs mt-6" style={{ color: 'rgba(255,255,255,0.35)' }}>🔒 Your result is hidden until standings</p>
+      </div>
+    );
+  }
 
   const sorted = [...players].sort(compareForRank);
   const rank = sorted.findIndex((p) => p.id === player.id) + 1;
@@ -21,13 +41,6 @@ export default function FinalView({ player, players }: FinalViewProps) {
   const profit = money - STARTING_MONEY;
   const pctReturn = ((profit) / STARTING_MONEY) * 100;
   const isProfit = profit >= 0;
-
-  // Awards
-  const awards = calculateAwards(players);
-  const myAwards = getPlayerAwards(player.id, awards);
-
-  // Player stats
-  const stats = calcPlayerStats(player);
 
   // Round-by-round bars
   const roundBars: { round: number; pct: number }[] = [];
@@ -66,50 +79,6 @@ export default function FinalView({ player, players }: FinalViewProps) {
         </div>
         <div className="text-gray-500 text-xs">
           {isProfit ? '+' : ''}{pctReturn.toFixed(1)}% from ฿{STARTING_MONEY.toLocaleString()}
-        </div>
-      </div>
-
-      {/* === B11: Award Badges === */}
-      {myAwards.length > 0 && (
-        <div className="mb-4">
-          {myAwards.map((award) => (
-            <div
-              key={award.id}
-              className="border rounded-lg px-4 py-3 text-center mb-2"
-              style={{ background: 'rgba(253,211,77,0.08)', borderColor: 'rgba(253,211,77,0.3)' }}
-            >
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <span className="text-2xl">{award.emoji}</span>
-                <span className="text-sm font-bold" style={{ color: '#FCD34D' }}>{award.name}</span>
-              </div>
-              <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>{award.stat}</div>
-              {/* ✅ B15: ถ้ามีผู้ชนะร่วม แสดงชื่อคนอื่น (B16d: fix filter — ตัดชื่อตัวเองออก) */}
-              {award.winnerNames && award.winnerNames.length > 1 && (
-                <div className="text-xs mt-1.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  ร่วมกับ: {award.winnerNames.filter((n) => n !== player.name).join(', ')}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* === Your Stats — ✅ B13: เปลี่ยน duel → chance card === */}
-      <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-4">
-        <div className="text-xs tracking-widest text-gray-500 mb-2">YOUR STATS</div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="text-center">
-            <div className="text-lg font-bold" style={{ color: 'var(--mw-rose)' }}>
-              {stats.quizCorrect}/{stats.quizTotal}
-            </div>
-            <div className="text-xs text-gray-500">Quiz ถูก</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-bold" style={{ color: stats.chanceTotal >= 0 ? '#22c55e' : '#ef4444' }}>
-              {stats.chanceTotal >= 0 ? '+' : '-'}฿{Math.abs(stats.chanceTotal).toLocaleString()}
-            </div>
-            <div className="text-xs text-gray-500">🃏 Chance Card</div>
-          </div>
         </div>
       </div>
 

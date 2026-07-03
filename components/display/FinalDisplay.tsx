@@ -1,15 +1,14 @@
-// FILE: components/display/FinalDisplay.tsx — Display Final Phase ROUTER (4 steps)
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// FILE: components/display/FinalDisplay.tsx — Display Final Phase ROUTER (3 steps)
+// VERSION: YG-V5 — cut Awards step: final → final_podium → final_ranking (FinalAwards now dormant)
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 cut Awards step
 'use client';
 
 import type { SfxKey } from '@/lib/sound';
 import FinalPodium from '@/components/display/FinalPodium';
-import FinalAwards from '@/components/display/FinalAwards';
 import FinalRanking from '@/components/display/FinalRanking';
 
-export type FinalPhase = 'final' | 'final_podium' | 'final_awards' | 'final_ranking';
+export type FinalPhase = 'final' | 'final_podium' | 'final_ranking';
 
 interface FinalDisplayProps {
   players: any[];
@@ -43,7 +42,6 @@ function FinalSuspense() {
 export default function FinalDisplay({ players, phase, animate, playSfx }: FinalDisplayProps) {
   // key={phase} → remount per step so entrance animation runs fresh; settled handled via `animate`
   if (phase === 'final_podium') return <FinalPodium key="podium" players={players} animate={animate} playSfx={playSfx} />;
-  if (phase === 'final_awards') return <FinalAwards key="awards" players={players} animate={animate} playSfx={playSfx} />;
   if (phase === 'final_ranking') return <FinalRanking key="ranking" players={players} animate={animate} />;
   return <FinalSuspense />;
 }

@@ -1,13 +1,12 @@
-// FILE: components/display/FinalRanking.tsx — Final step ④ Full ranking + teaching overview
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// FILE: components/display/FinalRanking.tsx — Final step ② Full ranking (real teams only)
+// VERSION: YG-V5 — remove benchmark ghosts + Smart Diversifier badge; keep 🎯/🧺 strategy tags
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 real-teams-only
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { compareForRank } from '@/lib/ranking';
-import { calculateAwards } from '@/lib/awards';
-import { STARTING_MONEY, COMPANIES, RETURN_TABLE } from '@/lib/constants';
+import { STARTING_MONEY, COMPANIES } from '@/lib/constants';
 
 interface FinalRankingProps {
   players: any[];
@@ -44,53 +43,6 @@ function classifyStrategy(player: any): Strat {
   return 'mix';
 }
 
-// ---- Benchmarks — คำนวณ dynamic จาก RETURN_TABLE + COMPANIES (ตลาดล้วน ไม่รวมการ์ด/ควิซ) ----
-interface Bench { id: string; label: string; icon: string; money: number; }
-
-function compound(arr: number[]): number {
-  let m = STARTING_MONEY;
-  for (const r of arr) m *= (1 + (Number(r) || 0) / 100);
-  return m;
-}
-function companyMeta(id: string) {
-  const c = (COMPANIES as any[]).find((x) => x.id === id);
-  return { name: c?.name ?? id, icon: c?.icon ?? '📊' };
-}
-function computeBenchmarks(): Bench[] {
-  const table = (RETURN_TABLE || {}) as Record<string, number[]>;
-  const ids = Object.keys(table);
-  if (!ids.length) return [];
-  const rounds = table[ids[0]]?.length ?? 0;
-  if (!rounds) return [];
-
-  const allin = ids.map((id) => ({ id, money: compound(table[id]) }));
-  const best = allin.reduce((a, b) => (b.money > a.money ? b : a));
-  const worst = allin.reduce((a, b) => (b.money < a.money ? b : a));
-
-  const eqRounds: number[] = [];
-  for (let r = 0; r < rounds; r++) {
-    eqRounds.push(ids.reduce((s, id) => s + (Number(table[id][r]) || 0), 0) / ids.length);
-  }
-  const equalMoney = compound(eqRounds);
-
-  const out: Bench[] = [];
-  const bm = companyMeta(best.id);
-  out.push({ id: 'bm_best', label: `ทุ่ม${bm.name} (ท็อป)`, icon: bm.icon, money: best.money });
-
-  // ฝากเงินเฉยๆ = ออมทรัพย์ (ถ้ามี sector piggybank และไม่ซ้ำกับ best/worst)
-  if (table['piggybank'] && best.id !== 'piggybank' && worst.id !== 'piggybank') {
-    const pm = companyMeta('piggybank');
-    out.push({ id: 'bm_savings', label: 'ฝากเงินเฉยๆ', icon: pm.icon, money: compound(table['piggybank']) });
-  }
-
-  out.push({ id: 'bm_equal', label: 'กระจายเท่ากัน', icon: '🧺', money: equalMoney });
-
-  const wm = companyMeta(worst.id);
-  out.push({ id: 'bm_worst', label: `ทุ่ม${wm.name} (แย่)`, icon: wm.icon, money: worst.money });
-
-  return out;
-}
-
 const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
 const medalGlow = ['rgba(255,215,0,0.55)', 'rgba(192,192,192,0.5)', 'rgba(205,127,50,0.5)'];
 const medals = ['🥇', '🥈', '🥉'];
@@ -115,26 +67,12 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
     const stratOf: Record<string, Strat> = {};
     sortedPlayers.forEach((p) => { stratOf[p.id] = classifyStrategy(p); });
 
-    let winnerIds: string[] = [];
-    try {
-      const div = calculateAwards(players).find((a) => a.id === 'smart_diversifier');
-      if (div) winnerIds = (div.winnerIds && div.winnerIds.length ? div.winnerIds : (div.winnerId ? [div.winnerId] : [])) as string[];
-    } catch { winnerIds = []; }
-
-    // merge players + benchmark ghosts, sort by money desc (players pre-sorted → stable within ties)
-    const benches = computeBenchmarks();
-    const combined: any[] = [
-      ...sortedPlayers.map((p) => ({ kind: 'p', money: parseFloat(p.money) || 0, p })),
-      ...benches.map((b) => ({ kind: 'b', money: b.money, b })),
-    ];
-    combined.sort((a, b) => b.money - a.money);
-
     const cols = Math.min(n <= 10 ? 3 : n <= 24 ? 4 : n <= 48 ? 6 : n <= 80 ? 8 : 10, Math.max(1, n));
 
-    return { combined, n, greenCount, redCount, avg, maxRet, minRet, stratOf, winnerIds, cols };
+    return { sortedPlayers, n, greenCount, redCount, avg, maxRet, minRet, stratOf, cols };
   }, [players]);
 
-  const { combined, n, greenCount, redCount, avg, maxRet, minRet, stratOf, winnerIds, cols } = view;
+  const { sortedPlayers, n, greenCount, redCount, avg, maxRet, minRet, stratOf, cols } = view;
 
   // scale-to-fit height — ให้ทุกคนอยู่ครบเสมอ (ทำงานทับ CSS zoom ของ display page ได้ เพราะวัดเป็น px จริง)
   useEffect(() => {
@@ -150,7 +88,7 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
     const t = setTimeout(fit, 150); // เผื่อ emoji/ฟอนต์โหลดเสร็จ
     window.addEventListener('resize', fit);
     return () => { cancelAnimationFrame(raf); clearTimeout(t); window.removeEventListener('resize', fit); };
-  }, [combined, cols]);
+  }, [sortedPlayers, cols]);
 
   const waveTotal = 1100;
   const stEmoji = (s: Strat) => (s === 'allin' ? '🎯' : s === 'div' ? '🧺' : '');
@@ -160,8 +98,6 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
     i === 2 ? 'linear-gradient(180deg,rgba(205,127,50,0.13),var(--mw-surface))' :
     profit ? 'rgba(34,197,94,0.09)' : 'rgba(239,68,68,0.09)';
   const cellBorder = (profit: boolean) => (profit ? 'rgba(34,197,94,0.28)' : 'rgba(239,68,68,0.26)');
-
-  let rank = 0; // เลขอันดับ — นับเฉพาะผู้เล่นจริง (ghost ไม่กินเลข)
 
   return (
     <div className="relative h-screen flex flex-col px-6 pt-12 pb-6 overflow-hidden">
@@ -183,40 +119,13 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
       <div ref={boxRef} className="flex-1 overflow-hidden">
         <div ref={gridRef} className="grid gap-2 content-start"
           style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, transform: `scale(${scale})`, transformOrigin: 'top center' }}>
-          {combined.map((item, idx) => {
-            // ---- benchmark ghost ----
-            if (item.kind === 'b') {
-              const b: Bench = item.b;
-              const bRet = (b.money - STARTING_MONEY) / STARTING_MONEY * 100;
-              return (
-                <div key={b.id} className="rounded-lg px-3 py-2 flex flex-col justify-center gap-0.5"
-                  style={{ border: '2px dashed #7DD3FC', background: 'rgba(125,211,252,0.08)' }}>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="flex-shrink-0" style={{ fontSize: '1rem' }}>{b.icon}</span>
-                    <span className="flex-1 min-w-0 font-bold truncate" style={{ fontSize: '1.05rem', color: '#BAE6FD' }}>{b.label}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#7DD3FC', letterSpacing: '0.3px' }}>ถ้าเล่นแบบนี้</span>
-                    <span className="font-bold" style={{ fontSize: '0.95rem', color: bRet >= 0 ? '#22c55e' : '#ef4444' }}>
-                      {bRet >= 0 ? '▲' : '▼'} {fmtPct(bRet)}
-                    </span>
-                  </div>
-                </div>
-              );
-            }
-
-            // ---- real player ----
-            rank++;
-            const i = rank - 1;
-            const p = item.p;
+          {sortedPlayers.map((p, i) => {
             const money = parseFloat(p.money) || 0;
             const profit = money >= STARTING_MONEY;
-            const win = winnerIds.includes(p.id);
             const s = stratOf[p.id];
 
-            let border = i < 3 ? `1.5px solid ${rankColors[i]}` : `1px solid ${cellBorder(profit)}`;
-            let boxShadow = i < 3 ? `0 0 15px ${medalGlow[i]}` : 'none';
-            if (win) { border = '1.5px solid var(--mw-violet)'; boxShadow = '0 0 16px rgba(var(--mw-violet-rgb),0.6)'; } // winner เขียวชนะทุกกรณี
+            const border = i < 3 ? `1.5px solid ${rankColors[i]}` : `1px solid ${cellBorder(profit)}`;
+            const boxShadow = i < 3 ? `0 0 15px ${medalGlow[i]}` : 'none';
 
             return (
               <div key={p.id} className="rounded-lg px-3 py-2 flex flex-col justify-center gap-0.5"
@@ -225,14 +134,13 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
                   border,
                   boxShadow,
                   animation: doAnim ? 'mwCellIn 0.4s ease-out both' : 'none',
-                  animationDelay: doAnim ? `${(idx * (waveTotal / Math.max(1, combined.length))).toFixed(0)}ms` : '0ms',
+                  animationDelay: doAnim ? `${(i * (waveTotal / Math.max(1, n))).toFixed(0)}ms` : '0ms',
                 }}>
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="font-bold flex-shrink-0" style={{ fontSize: i < 3 ? '1.15rem' : '0.95rem', color: i < 3 ? rankColors[i] : 'rgba(255,255,255,0.5)' }}>
                     {i < 3 ? medals[i] : `#${i + 1}`}
                   </span>
                   <span className="flex-1 min-w-0 font-bold text-lg truncate" style={{ color: i < 3 ? rankColors[i] : '#fff' }}>{p.name}</span>
-                  {win && <span className="flex-shrink-0" style={{ fontSize: '1.25rem', filter: 'drop-shadow(0 0 4px rgba(var(--mw-violet-rgb),0.9))' }}>🏅</span>}
                 </div>
                 <div className="flex items-center gap-2">
                   {s && <span style={{ fontSize: '0.95rem' }}>{stEmoji(s)}</span>}
@@ -248,7 +156,7 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
 
       {/* legend */}
       <div className="mt-2 text-center" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
-        🎯 ทุ่มกระจุก · 🧺 กระจาย · 🏅 ชนะรางวัลกระจาย · <span style={{ color: '#7DD3FC' }}>▢ กรอบฟ้า = ถ้าเล่นแบบนี้ (ตลาดล้วน ไม่รวมการ์ด/ควิซ)</span>
+        🎯 ทุ่มกระจุก · 🧺 กระจาย
       </div>
     </div>
   );

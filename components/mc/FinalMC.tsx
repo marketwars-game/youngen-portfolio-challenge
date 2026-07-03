@@ -1,10 +1,9 @@
 // FILE: components/mc/FinalMC.tsx — MC Final Phase
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// VERSION: YG-V5 — align MC script to 2-step final (① Podium → ② Ranking); drop SPECIAL AWARDS box (Awards step cut)
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 script + drop awards box
 
-import { STARTING_MONEY, COMPANIES } from '@/lib/constants';
-import { calculateAwards } from '@/lib/awards';
+import { STARTING_MONEY } from '@/lib/constants';
 
 interface FinalMCProps {
   players: any[];
@@ -38,23 +37,15 @@ export default function FinalMC({ players }: FinalMCProps) {
     ? (((parseFloat(biggestWinner.money) || 0) - STARTING_MONEY) / STARTING_MONEY) * 100
     : 0;
 
-  // Awards
-  const awards = calculateAwards(players);
-
   return (
     <div className="space-y-3">
-      {/* MC Tip — Script for announcing awards */}
+      {/* MC Tip — Script for closing the game */}
       <div className="border-l-4 border-[#FCD34D] bg-[#1a1f2e] rounded-r-lg p-3">
-        <p className="text-[#FCD34D] text-sm font-bold mb-2">🎤 Script แจกรางวัล (คุมจังหวะด้วยปุ่ม Step ด้านบน)</p>
+        <p className="text-[#FCD34D] text-sm font-bold mb-2">🎤 Script ปิดเกม (คุมจังหวะด้วยปุ่ม Step ด้านบน)</p>
         <div className="text-gray-400 text-xs space-y-2">
           <p>① <b>Podium</b> — ปั่นบรรยากาศ &quot;ใครคือแชมป์?&quot; แล้วกด <b>เฉลยแชมป์</b> → ประกาศ Top 3 (จอไล่ #3→#2→#1)</p>
-          <p>② <b>Awards</b> — ประกาศ &quot;นักวิจัยยอดเยี่ยม 🧠&quot; ก่อน → ถามเด็ก: &quot;ตอบ quiz ถูกเยอะ ช่วยตัดสินใจลงทุนยังไง?&quot;</p>
-          <p className="text-[#34d399]">…แล้วค่อยเฉลย <b>twist</b>: &quot;นักลงทุนกระจายความเสี่ยง 🧺&quot; — ดร.โบว์เชื่อมว่า &quot;ใครฟังพี่โบว์เรื่องกระจายความเสี่ยงแล้วทำตาม นี่คือรางวัลของเขา&quot;</p>
-          <p>③ <b>Ranking</b> — เปิดอันดับทุกคน เผื่อให้น้องๆ มาถ่ายรูปร่วมกัน 📸</p>
-          <p className="text-gray-500 italic mt-2">
-            💡 รางวัลกระจายความเสี่ยง = คนที่ลง ≥3 กลุ่มทุกปี ไม่ทุ่มหมดหน้าตัก แล้วเงินสูงสุดในกลุ่มนั้น — สอน &quot;อย่าใส่ไข่ทั้งหมดในตะกร้าใบเดียว&quot; แบบเห็นจริง (ถ้าทับแชมป์ = บทเรียนยิ่งดี!)
-          </p>
-          <p>④ สรุปบทเรียน 5 ข้อ (ดูด้านล่าง)</p>
+          <p>② <b>Ranking</b> — เปิดอันดับทุกทีม เผื่อให้น้องๆ มาถ่ายรูปร่วมกัน 📸</p>
+          <p>③ สรุปบทเรียนการลงทุน (ดูด้านล่าง) — เน้น <b style={{ color: '#34d399' }}>&quot;กระจายความเสี่ยง 🧺 = ไม่ทุ่มไข่ตะกร้าเดียว&quot;</b></p>
         </div>
       </div>
 
@@ -93,57 +84,6 @@ export default function FinalMC({ players }: FinalMCProps) {
           </span>
           <div className="text-xs text-gray-500">Profit / Loss</div>
         </div>
-      </div>
-
-      {/* === B11: Awards Box === */}
-      <div className="bg-[var(--mw-surface)] rounded-lg p-3 border border-[#FCD34D]/30">
-        <div className="text-xs tracking-widest text-[#FCD34D] mb-3">🏅 SPECIAL AWARDS</div>
-        {awards.map((award) => (
-          <div key={award.id} className="mb-3 last:mb-0">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{award.emoji}</span>
-                <span className="text-sm font-bold text-gray-300">{award.name}</span>
-              </div>
-              <span className="text-sm font-bold" style={{ color: '#FCD34D' }}>
-                {award.winnerName}
-              </span>
-            </div>
-            <div className="text-xs" style={{ color: 'var(--mw-rose)' }}>{award.stat}</div>
-            <div className="text-xs text-gray-500 mt-0.5">{award.lesson}</div>
-
-            {/* Portfolio breakdown สำหรับนักลงทุนกระจายความเสี่ยง */}
-            {award.portfolioBreakdown && award.portfolioBreakdown.length > 0 && (
-              <div className="mt-2 bg-[var(--mw-base)] rounded p-2">
-                <div className="text-xs text-gray-500 mb-1">📊 Portfolio ทุกรอบ:</div>
-                <div className="space-y-1">
-                  {award.portfolioBreakdown.map((rb) => (
-                    <div key={rb.round} className="flex items-center gap-2 text-xs">
-                      <span className="text-gray-500 w-6">R{rb.round}</span>
-                      <div className="flex flex-wrap gap-1">
-                        {Object.entries(rb.allocations).map(([name, pct]) => {
-                          const company = COMPANIES.find((c) => c.name === name);
-                          return (
-                            <span
-                              key={name}
-                              className="px-1.5 py-0.5 rounded text-xs"
-                              style={{
-                                backgroundColor: `${company?.color || '#888'}20`,
-                                color: company?.color || '#888',
-                              }}
-                            >
-                              {name} {pct}%
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
       </div>
 
       {/* Full Leaderboard */}

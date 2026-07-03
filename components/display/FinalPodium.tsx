@@ -1,13 +1,12 @@
-// FILE: components/display/FinalPodium.tsx — Final step ② Podium reveal (3→2→1)
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// FILE: components/display/FinalPodium.tsx — Final step ① Podium reveal (3→2→1)
+// VERSION: YG-V5 — drop Smart Diversifier award pill (no awards in YG final); champion reveal = money/rank only
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 drop award pill
 'use client';
 
 import { useEffect, useState } from 'react';
 import { compareForRank } from '@/lib/ranking';
 import { STARTING_MONEY } from '@/lib/constants';
-import { calculateAwards, getPlayerAwards } from '@/lib/awards';
 import type { SfxKey } from '@/lib/sound';
 import ConfettiCanvas from '@/components/display/ConfettiCanvas';
 
@@ -28,7 +27,6 @@ export default function FinalPodium({ players, animate, playSfx }: FinalPodiumPr
   const [confetti, setConfetti] = useState(false);
   const sorted = [...players].sort(compareForRank);
   const top3 = sorted.slice(0, 3);
-  const awards = calculateAwards(players);
 
   // SFX + confetti choreography (only on first reveal) — drumroll → name, one at a time, for MC to announce
   useEffect(() => {
@@ -68,8 +66,6 @@ export default function FinalPodium({ players, animate, playSfx }: FinalPodiumPr
     ? { animation: 'mwGrow 0.5s cubic-bezier(.2,1.1,.3,1) both', animationDelay: `${barDelay(rankIndex)}s`, transformOrigin: 'bottom' as const }
     : {};
 
-  const wonTwo = (id: string) => getPlayerAwards(id, awards).length > 0;
-
   // B19: plain render fn (NOT a nested component) — using <Card/> remounted all cards on every
   // re-render (new function identity each render), restarting the reveal. Calling renderCard() inlines JSX.
   const renderCard = (p: any, rankIndex: number) => {
@@ -85,9 +81,6 @@ export default function FinalPodium({ players, animate, playSfx }: FinalPodiumPr
           <p className={`${isChamp ? 'text-3xl' : 'text-xl'} font-bold truncate max-w-[220px]`} style={{ color: nameColors[rankIndex] }}>{p.name}</p>
           <p className={`${isChamp ? 'text-2xl' : 'text-lg'} mt-1`} style={{ color: 'rgba(255,255,255,0.85)' }}>฿{(parseFloat(p.money) || 0).toLocaleString()}</p>
           <p className={`${isChamp ? 'text-xl' : 'text-base'} mt-0.5`} style={{ color: getReturnColor(parseFloat(p.money)) }}>{getReturnPct(parseFloat(p.money))}%</p>
-          {wonTwo(p.id) && (
-            <p className="mt-2 text-sm font-bold px-3 py-1 rounded-full" style={{ color: '#04210f', background: 'linear-gradient(135deg,#FFD700,var(--mw-violet))' }}>🏆 ชนะ 2 รางวัล · 2 awards</p>
-          )}
         </div>
         <div className="rounded-t-xl mt-3" style={{ ...baseAnim(rankIndex), background: podiumBg[rankIndex], height: `${h}px`, width: `${w}px`, borderTop: `3px solid ${podiumColors[rankIndex]}` }} />
       </div>
