@@ -1,7 +1,7 @@
 // FILE: app/mc/[roomId]/page.tsx — MC Control screen
-// VERSION: YG-V5 — final stepper: cut Awards step (① Podium → ② Ranking)
+// VERSION: YG-V6 — add "End & New Room" (next-group) button on final; final stepper unchanged (① Podium → ② Ranking)
 // LAST MODIFIED: 03 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V4 reveal button + EN label | YG-V5 cut Awards step
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V4 reveal button | YG-V5 cut Awards step | YG-V6 End & New Room
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -142,6 +142,20 @@ export default function MCControlRoom() {
       const res = await fetch('/api/game/phase', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ room_id: roomId, action: 'set', phase: targetPhase }) });
       const data = await res.json();
       if (!res.ok) setError(data.error || 'Something went wrong');
+    } catch (err) { setError('Network error'); }
+    setActionLoading(false);
+  };
+
+  // YG-V6: finish this game + spin up a fresh room for the NEXT GROUP, then jump to it.
+  // NOTE: this is for switching groups — do NOT use between days of the same group (leave the room 'playing' overnight so teams can rejoin).
+  const handleEndAndNewRoom = async () => {
+    if (!confirm('จบเกมนี้ + สร้างห้องใหม่สำหรับกลุ่มถัดไป?\n\n⚠️ อย่าใช้ปุ่มนี้ระหว่างวัน — ใช้เมื่อจะเริ่มกลุ่มใหม่เท่านั้น (เกมเก่าจะถูกจบทันที ย้อนกลับไม่ได้)')) return;
+    setActionLoading(true); setError('');
+    try {
+      const res = await fetch('/api/rooms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ forceNew: true }) });
+      const data = await res.json();
+      if (data.success && data.room) { router.push(`/mc/${data.room.id}`); return; }
+      setError(data.error || 'สร้างห้องใหม่ไม่สำเร็จ');
     } catch (err) { setError('Network error'); }
     setActionLoading(false);
   };
@@ -450,6 +464,17 @@ export default function MCControlRoom() {
 
       {/* === Final — Component === */}
       {isFinal && <FinalMC players={players} />}
+
+      {/* === YG-V6: Next group — end this game + create a fresh room === */}
+      {isFinal && (
+        <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-3 border border-[#FF6B6B]/25">
+          <p className="text-[#FF6B6B] text-sm font-bold mb-1">🔄 กลุ่มถัดไป · Next group</p>
+          <p className="text-gray-500 text-[11px] mb-2">จบเกมนี้แล้วสร้างห้องใหม่ให้เลย — ใช้ตอนสลับกลุ่มเท่านั้น (ไม่ใช่ระหว่างวัน)</p>
+          <button onClick={handleEndAndNewRoom} disabled={actionLoading} className="w-full py-2.5 rounded-lg font-bold text-white border border-[#FF6B6B]/50 disabled:opacity-40" style={{ background: 'rgba(255,107,107,0.12)' }}>
+            {actionLoading ? 'Working…' : '🔄 จบเกม + สร้างห้องใหม่ · End & New Room'}
+          </button>
+        </div>
+      )}
 
       {/* Error */}
       {error && <div className="bg-red-900/30 border border-red-500 rounded-lg p-3 mb-3 text-red-400 text-sm">{error}</div>}

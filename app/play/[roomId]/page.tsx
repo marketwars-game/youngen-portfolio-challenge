@@ -1,7 +1,7 @@
 // FILE: app/play/[roomId]/page.tsx — Player game screen
-// VERSION: YG-V5 — pass phase to FinalView (spoiler guard on final/final_podium)
+// VERSION: YG-V6 — player EN sweep (header/lobby/year_intro list→YG steps/market_open) + challenge wording
 // LAST MODIFIED: 03 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 phase→FinalView
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V5 phase→FinalView | YG-V6 player EN
 'use client';
 
 import { useEffect, useState, useRef, Suspense } from 'react';
@@ -261,7 +261,7 @@ function PlayerContent() {
         <span className="text-neon-green font-bold text-sm">{player.name}</span>
         {phase !== 'lobby' && !isFinal && (
           <span className="text-[10px] text-neon-cyan font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(var(--mw-rose-rgb),0.1)' }}>
-            ปีที่ {round}
+            Challenge {round}
           </span>
         )}
         <div className="flex items-center gap-2">
@@ -321,28 +321,28 @@ function PlayerContent() {
         <div className="bg-[var(--mw-surface)] rounded-lg p-4 text-center">
           <p className="text-neon-green font-bold text-lg mb-2">You&apos;re in! 🎉</p>
           <p className="text-gray-400 text-sm mb-3">Starting money: ฿{STARTING_MONEY.toLocaleString()}</p>
-          <p className="text-gray-500 text-xs">📺 ดูจอใหญ่เพื่อดูรายชื่อผู้เล่น</p>
-          <p className="text-gray-600 text-xs mt-1">รอ MC เริ่มเกม...</p>
+          <p className="text-gray-500 text-xs">📺 Watch the big screen for the team list</p>
+          <p className="text-gray-600 text-xs mt-1">Waiting for the MC to start…</p>
         </div>
       )}
 
       {/* ✅ B13: Year Intro — ปรับขั้นตอน: เป่ายิงฉุบ → เปิดการ์ดโชคชะตา */}
       {phase === 'year_intro' && (() => {
-        const introText = YEAR_INTRO_TEXT[round] || { title: `ปีที่ ${round} เริ่มแล้ว!`, subtitle: 'เตรียมตัวให้พร้อม' };
+        const introText = YEAR_INTRO_TEXT[round] || { title: `Challenge ${round}`, subtitle: 'Get ready — rebalance your portfolio.' };
         return (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <p className="text-xs tracking-[4px] text-neon-cyan font-medium mb-1">Y E A R</p>
+            <p className="text-xs tracking-[4px] text-neon-cyan font-medium mb-1">C H A L L E N G E</p>
             <p className="text-6xl font-black text-neon-green leading-none mb-3">{round}</p>
             <p className="text-base text-white font-medium mb-1">{introText.title}</p>
             <p className="text-sm text-gray-400 mb-5">{introText.subtitle}</p>
 
-            <p className="text-[10px] text-gray-500 tracking-[2px] mb-3">สิ่งที่ต้องทำปีนี้</p>
+            <p className="text-[10px] text-gray-500 tracking-[2px] mb-3">THIS CHALLENGE</p>
             <div className="flex flex-col gap-2 w-full max-w-[220px]">
               {[
-                { num: 1, text: 'ตอบ Quiz รับ Bonus เงิน' },
-                { num: 2, text: 'จัดสรรงบประมาณลงทุน' },
-                { num: 3, text: 'เปิดการ์ดโชคชะตา' },
-                { num: 4, text: 'ดูผลตลาดประจำปี' },
+                { num: 1, text: `Allocate your ฿${(parseFloat(player.money) || 0).toLocaleString()}` },
+                { num: 2, text: 'Reveal — see every team' },
+                { num: 3, text: 'Watch the market' },
+                { num: 4, text: 'See your results' },
               ].map((s) => (
                 <div key={s.num} className="flex items-center gap-2 text-sm text-gray-400">
                   <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ background: 'rgba(var(--mw-violet-rgb),0.15)', color: 'var(--mw-violet)' }}>{s.num}</span>
@@ -351,7 +351,7 @@ function PlayerContent() {
               ))}
             </div>
 
-            <p className="text-xs text-gray-600 mt-6">รอ MC เริ่ม...</p>
+            <p className="text-xs text-gray-600 mt-6">Waiting for the MC…</p>
           </div>
         );
       })()}
@@ -360,11 +360,11 @@ function PlayerContent() {
       {phase === 'market_open' && (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <p className="text-5xl mb-3">📈</p>
-          <p className="text-xl font-bold text-[#FFD700] mb-2">ตลาดเปิดแล้ว!</p>
-          <p className="text-sm text-gray-400 mb-1">เหตุการณ์สำคัญประจำปีที่ {round}</p>
-          <p className="text-sm text-gray-400">กำลังจะถูกเปิดเผย...</p>
+          <p className="text-xl font-bold text-[#FFD700] mb-2">Market open!</p>
+          <p className="text-sm text-gray-400 mb-1">Key events of Challenge {round}</p>
+          <p className="text-sm text-gray-400">Revealing soon…</p>
           <div className="flex items-center gap-1.5 mt-5 text-xs text-gray-500">
-            <span>📺</span> ดูจอใหญ่!
+            <span>📺</span> Watch the big screen!
           </div>
         </div>
       )}

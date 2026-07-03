@@ -1,7 +1,7 @@
 // FILE: components/display/LobbyDisplay.tsx — Display lobby (QR + joined players)
-// VERSION: YG-V2 — fit-to-screen (rendered inside FitStage 1280×720); retire CSS zoom
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen
+// VERSION: YG-V6 — join URL text → bit.ly/portchallenge (was bit.ly/marketwars, unregistered)
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen | YG-V6 bit.ly text
 'use client';
 
 import { useState } from 'react';
@@ -29,7 +29,7 @@ export default function LobbyDisplay({ players, roomId, joinUrl }: { players: an
           </div>
           <p className="text-3xl font-bold font-mono tracking-[10px] mb-2" style={{ color: 'var(--mw-rose)' }}>{roomId}</p>
           <p className="text-base mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>Scan the QR or enter the room code</p>
-          <p className="text-base font-semibold" style={{ color: 'var(--mw-rose)' }}>bit.ly/marketwars</p>
+          <p className="text-base font-semibold" style={{ color: 'var(--mw-rose)' }}>bit.ly/portchallenge</p>
         </div>
 
         <div className="w-px self-stretch" style={{ background: 'rgba(255,255,255,0.08)' }} />
@@ -67,7 +67,7 @@ export default function LobbyDisplay({ players, roomId, joinUrl }: { players: an
             {joinUrl && <QRCodeSVG value={joinUrl} size={320} />}
           </div>
           <p className="text-4xl font-bold font-mono tracking-[12px]" style={{ color: 'var(--mw-rose)' }}>{roomId}</p>
-          <p className="text-2xl font-semibold" style={{ color: 'var(--mw-rose)' }}>bit.ly/marketwars</p>
+          <p className="text-2xl font-semibold" style={{ color: 'var(--mw-rose)' }}>bit.ly/portchallenge</p>
           <p className="text-base" style={{ color: 'rgba(255,255,255,0.4)' }}>Tap anywhere to close</p>
         </div>
       )}

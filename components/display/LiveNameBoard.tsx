@@ -1,7 +1,7 @@
-// FILE: components/display/LiveNameBoard.tsx — Spectator name wall (invest / reveal / chance_card)
-// VERSION: YG-V4 — invest variant MASKED (submit status only, no bars); new 'reveal' variant shows every team's allocation together; EN
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B16b (shared grid wall: invest allocation bar + chance luck amount) | YG-V4 mask invest + reveal variant + EN
+// FILE: components/display/LiveNameBoard.tsx — Spectator wall (invest submit / reveal allocations)
+// VERSION: YG-V6 — 4–8 team layout: big rows (invest ✓/waiting · reveal allocation bar + 🎯/🧺 tag + legend); drop tier/PAGE_SIZE/paginate; EN
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: B16b (grid wall for ~70 players) | YG-V4 mask invest + reveal variant + EN | YG-V6 rework for few teams (rows + big allocation bars)
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -13,12 +13,9 @@ interface LiveNameBoardProps {
   variant: 'invest' | 'reveal' | 'chance';
 }
 
-const PAGE_SIZE = 96;
-const PAGE_ROTATE_MS = 9000;
-
 function sortByName(players: any[]) {
   return [...players].sort((a, b) =>
-    (a.name || '').localeCompare(b.name || '', 'th', { sensitivity: 'base' })
+    (a.name || '').localeCompare(b.name || '', 'en', { sensitivity: 'base' })
   );
 }
 
@@ -28,36 +25,26 @@ function isSubmitted(p: any, round: number, variant: 'invest' | 'reveal' | 'chan
     : p.portfolio_submitted_round === round;
 }
 
-function tierOf(n: number) {
-  if (n <= 80) return { cols: n <= 60 ? 6 : 7, detail: true, paginate: false };
-  if (n <= 110) return { cols: n <= 95 ? 8 : 9, detail: false, paginate: false };
-  return { cols: 8, detail: false, paginate: true };
+function assetCount(portfolio: any) {
+  return COMPANIES.reduce((n, c) => n + ((parseFloat(portfolio?.[c.id]) || 0) > 0 ? 1 : 0), 0);
 }
 
 export default function LiveNameBoard({ players, round, variant }: LiveNameBoardProps) {
   const sorted = sortByName(players);
-  const N = sorted.length;
+  const N = Math.max(1, sorted.length);
   const submittedCount = sorted.filter((p) => isSubmitted(p, round, variant)).length;
-  const tier = tierOf(N);
 
-  // chance summary
-  const opened = sorted.filter((p) => isSubmitted(p, round, variant));
-  const gainCount = opened.filter((p) => (parseFloat(p.duel_money_change) || 0) > 0).length;
-  const lossCount = opened.filter((p) => (parseFloat(p.duel_money_change) || 0) < 0).length;
-
-  // pagination (only when very large)
-  const pageCount = tier.paginate ? Math.ceil(N / PAGE_SIZE) : 1;
-  const [pageIdx, setPageIdx] = useState(0);
+  const areaRef = useRef<HTMLDivElement>(null);
+  const [areaH, setAreaH] = useState(520);
   useEffect(() => {
-    if (!tier.paginate || pageCount <= 1) { setPageIdx(0); return; }
-    const id = setInterval(() => setPageIdx((i) => (i + 1) % pageCount), PAGE_ROTATE_MS);
-    return () => clearInterval(id);
-  }, [tier.paginate, pageCount]);
-
-  const start = tier.paginate ? (pageIdx % pageCount) * PAGE_SIZE : 0;
-  const visible = tier.paginate ? sorted.slice(start, start + PAGE_SIZE) : sorted;
-  const cols = tier.cols;
-  const rows = Math.max(1, Math.ceil(visible.length / cols));
+    const el = areaRef.current;
+    if (!el) return;
+    const measure = () => setAreaH(el.clientHeight || 520);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // "just submitted" pop animation — diff across throttled reloads
   const prevSubmitted = useRef<Set<string>>(new Set());
@@ -69,16 +56,9 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
       players.filter((p) => isSubmitted(p, round, variant)).map((p) => p.id)
     );
     if (prevRound.current !== round) {
-      prevRound.current = round;
-      prevSubmitted.current = cur;
-      setJustIds(new Set());
-      return;
+      prevRound.current = round; prevSubmitted.current = cur; setJustIds(new Set()); return;
     }
-    if (firstRun.current) {
-      firstRun.current = false;
-      prevSubmitted.current = cur;
-      return;
-    }
+    if (firstRun.current) { firstRun.current = false; prevSubmitted.current = cur; return; }
     const fresh = new Set<string>();
     cur.forEach((id) => { if (!prevSubmitted.current.has(id)) fresh.add(id); });
     prevSubmitted.current = cur;
@@ -89,131 +69,95 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
     }
   }, [players, round, variant]);
 
-  const nameSize = tier.detail ? (cols <= 6 ? 22 : 18) : (N <= 110 ? 16 : 14);
-  const amtSize = tier.detail ? (cols <= 6 ? 19 : 16) : 14;
-  const barH = cols <= 6 ? 11 : 9;
-
-  function renderCell(p: any) {
-    const submitted = isSubmitted(p, round, variant);
-    const just = justIds.has(p.id);
-    let bg = 'rgba(255,255,255,0.02)';
-    let border = '0.5px solid rgba(255,255,255,0.05)';
-    let nameColor = 'rgba(255,255,255,0.42)';
-    let detailNode: React.ReactNode = null;
-
-    if (variant === 'invest' || variant === 'reveal') {
-      if (submitted) {
-        bg = 'rgba(255,255,255,0.05)';
-        nameColor = '#ffffff';
-        if (tier.detail) {
-          if (variant === 'reveal') {
-            // reveal: show the full allocation bar — every team, all at once
-            const portfolio = p.portfolio || {};
-            const segs = COMPANIES
-              .map((c) => ({ color: c.color, pct: parseFloat(portfolio[c.id]) || 0 }))
-              .filter((s) => s.pct > 0);
-            detailNode = (
-              <div className="rounded-full overflow-hidden flex" style={{ width: '80%', height: barH, background: segs.length ? 'rgba(255,255,255,0.08)' : 'rgba(245,158,11,0.25)' }}>
-                {segs.map((s, i) => (
-                  <div key={i} style={{ width: `${s.pct}%`, backgroundColor: s.color }} />
-                ))}
-              </div>
-            );
-          } else {
-            // invest: MASKED — show a submitted check only, never the allocation
-            detailNode = (
-              <span style={{ fontSize: amtSize, fontWeight: 700, lineHeight: 1, color: 'var(--mw-violet)' }}>✓</span>
-            );
-          }
-        }
-      } else if (tier.detail) {
-        detailNode = <div className="rounded-full" style={{ width: '80%', height: barH, background: 'transparent' }} />;
-      }
-    } else {
-      // chance
-      const amount = submitted ? (parseFloat(p.duel_money_change) || 0) : 0;
-      if (submitted) {
-        nameColor = '#ffffff';
-        if (amount > 0) { bg = 'rgba(34,197,94,0.14)'; border = '0.5px solid rgba(34,197,94,0.55)'; }
-        else if (amount < 0) { bg = 'rgba(239,68,68,0.14)'; border = '0.5px solid rgba(239,68,68,0.55)'; }
-        else { bg = 'rgba(255,255,255,0.06)'; border = '0.5px solid rgba(255,255,255,0.18)'; }
-        if (tier.detail) {
-          const amtColor = amount > 0 ? '#4ade80' : amount < 0 ? '#f87171' : 'rgba(255,255,255,0.7)';
-          const amtText = amount > 0 ? `+฿${amount.toLocaleString()}` : amount < 0 ? `−฿${Math.abs(amount).toLocaleString()}` : '฿0';
-          detailNode = <span style={{ fontSize: amtSize, fontWeight: 700, lineHeight: 1, color: amtColor }}>{amtText}</span>;
-        }
-      }
-    }
-
-    return (
-      <div
-        key={p.id}
-        className="flex flex-col items-center justify-center rounded-md overflow-hidden"
-        style={{
-          gap: 3,
-          minHeight: 0,
-          padding: '3px 6px',
-          background: bg,
-          border,
-          transform: just ? 'scale(1.12)' : 'scale(1)',
-          transition: 'transform .25s ease, background .3s ease, border-color .5s ease',
-        }}
-      >
-        <span style={{ fontSize: nameSize, fontWeight: 500, color: nameColor, maxWidth: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.15 }}>
-          {p.name}
-        </span>
-        {detailNode}
-      </div>
-    );
-  }
-
+  const gap = Math.max(9, Math.min(15, (areaH / N) * 0.13));
+  const rowH = Math.max(38, (areaH - gap * (N - 1)) / N);
+  const nameF = Math.round(Math.min(32, Math.max(20, rowH * 0.36)));
   const label = variant === 'chance' ? 'Opened' : variant === 'reveal' ? 'Allocations revealed' : 'Submitted';
+  const showLegend = variant === 'reveal';
 
   return (
     <div className="w-full flex-1 min-h-0 flex flex-col">
       {/* count strip */}
-      <div className="flex items-center justify-between flex-shrink-0" style={{ marginBottom: 8 }}>
-        <div className="flex items-center" style={{ gap: 12 }}>
-          <span style={{ fontSize: 15, color: 'rgba(255,255,255,0.6)' }}>{label}</span>
-          {variant === 'chance' && (gainCount > 0 || lossCount > 0) && (
-            <span style={{ fontSize: 15 }}>
-              <span style={{ color: '#4ade80' }}>▲ {gainCount}</span>
-              <span style={{ color: '#f87171', marginLeft: 8 }}>▼ {lossCount}</span>
-            </span>
-          )}
-        </div>
+      <div className="flex items-center justify-between flex-shrink-0" style={{ marginBottom: 10, padding: '0 4px' }}>
+        <span style={{ fontSize: 20, fontWeight: 600, color: 'rgba(255,255,255,0.62)', letterSpacing: 1 }}>{label}</span>
         <span>
-          <span style={{ color: '#4ade80', fontSize: 24, fontWeight: 700 }}>{submittedCount}</span>
-          <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 16 }}> / {N}</span>
+          <span style={{ color: '#4ade80', fontSize: 32, fontWeight: 800 }}>{submittedCount}</span>
+          <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 20 }}> / {N}</span>
         </span>
       </div>
 
-      {/* paginate notice */}
-      {tier.paginate && pageCount > 1 && (
-        <div className="flex-shrink-0 text-center rounded-md" style={{ marginBottom: 6, padding: '3px 10px', fontSize: 13, color: '#fcd34d', background: 'rgba(245,158,11,0.12)', border: '0.5px solid rgba(245,158,11,0.3)' }}>
-          {N} teams — page {(pageIdx % pageCount) + 1}/{pageCount} ({PAGE_SIZE} per page)
-        </div>
-      )}
+      {/* rows */}
+      <div ref={areaRef} className="flex-1 min-h-0 flex flex-col" style={{ gap }}>
+        {sorted.map((p) => {
+          const submitted = isSubmitted(p, round, variant);
+          const just = justIds.has(p.id);
+          const portfolio = p.portfolio || {};
+          const na = assetCount(portfolio);
+          const concentrated = na > 0 && na <= 2;
+          const diversified = na >= 4;
 
-      {/* wall */}
-      <div
-        className="flex-1 min-h-0 grid"
-        style={{
-          gap: 5,
-          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-          gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
-        }}
-      >
-        {visible.map((p) => renderCell(p))}
+          const segs = COMPANIES
+            .map((c) => ({ color: c.color, pct: parseFloat(portfolio[c.id]) || 0 }))
+            .filter((s) => s.pct > 0);
+
+          return (
+            <div
+              key={p.id}
+              style={{
+                height: rowH, flexShrink: 0, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 20,
+                padding: '0 24px', boxSizing: 'border-box',
+                background: submitted ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${submitted ? 'rgba(var(--mw-violet-rgb),0.3)' : 'rgba(255,255,255,0.06)'}`,
+                transform: just ? 'scale(1.015)' : 'scale(1)',
+                transition: 'transform .25s ease, background .3s ease, border-color .5s ease',
+              }}
+            >
+              <span style={{ fontSize: nameF, fontWeight: 700, color: submitted ? '#fff' : 'rgba(255,255,255,0.4)',
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                width: variant === 'reveal' ? 210 : undefined, flexShrink: 0 }}>
+                {p.name}
+              </span>
+
+              {variant === 'invest' && (
+                <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10, fontSize: Math.round(nameF * 0.9), fontWeight: 700 }}>
+                  {submitted
+                    ? <span style={{ color: 'var(--mw-violet)' }}>✓ Submitted</span>
+                    : <><span style={{ width: 9, height: 9, borderRadius: '50%', background: 'rgba(255,255,255,0.35)', animation: 'lnbBlink 1.1s ease-in-out infinite' }} /><span style={{ fontSize: Math.round(nameF * 0.7), fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>Waiting…</span></>}
+                </span>
+              )}
+
+              {variant === 'reveal' && (
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
+                  <div className="rounded-lg overflow-hidden flex" style={{ flex: 1, height: Math.round(rowH * 0.42), background: 'rgba(255,255,255,0.06)' }}>
+                    {submitted && segs.map((s, i) => (
+                      <div key={i} style={{ width: `${s.pct}%`, backgroundColor: s.color }} />
+                    ))}
+                  </div>
+                  {submitted && concentrated && <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#fbbf24', background: 'rgba(245,158,11,0.16)' }}>🎯 Concentrated</span>}
+                  {submitted && diversified && <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#4ade80', background: 'rgba(34,197,94,0.14)' }}>🧺 Diversified</span>}
+                  {!submitted && <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>not submitted</span>}
+                </div>
+              )}
+
+              {variant === 'chance' && (
+                <span style={{ marginLeft: 'auto', fontSize: Math.round(nameF * 0.9), fontWeight: 700, color: 'var(--mw-violet)' }}>
+                  {submitted ? '✓' : ''}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* asset legend — only when bars are visible (reveal) */}
-      {variant === 'reveal' && tier.detail && (
-        <div className="flex-shrink-0 flex flex-wrap items-center justify-center" style={{ gap: 14, marginTop: 9, paddingTop: 9, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+      <style>{`@keyframes lnbBlink { 0%,100%{opacity:.25} 50%{opacity:1} }`}</style>
+
+      {/* asset legend (reveal) */}
+      {showLegend && (
+        <div className="flex-shrink-0 flex flex-wrap items-center justify-center" style={{ gap: 16, marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           {getAvailableAssets(round).map((c) => (
-            <div key={c.id} className="flex items-center" style={{ gap: 5 }}>
-              <span style={{ width: 11, height: 11, borderRadius: 3, background: c.color, display: 'inline-block' }} />
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.62)' }}>{c.name}</span>
+            <div key={c.id} className="flex items-center" style={{ gap: 6 }}>
+              <span style={{ width: 12, height: 12, borderRadius: 3, background: c.color, display: 'inline-block' }} />
+              <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)' }}>{c.name}</span>
             </div>
           ))}
         </div>

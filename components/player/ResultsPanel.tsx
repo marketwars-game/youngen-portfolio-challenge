@@ -1,7 +1,7 @@
 // FILE: components/player/ResultsPanel.tsx
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// VERSION: YG-V6 — player EN sweep (results panel) + round→challenge; chance-card row already gated by hasChance (dormant)
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V6 EN
 'use client';
 
 import { COMPANIES, RETURN_TABLE } from '@/lib/constants';
@@ -58,13 +58,13 @@ export default function ResultsPanel({ round, player }: ResultsPanelProps) {
       {/* Header */}
       <div className="text-center mb-3">
         <span className="text-xs tracking-widest" style={{ color: 'var(--mw-rose)' }}>
-          ROUND {round} RESULTS
+          CHALLENGE {round} RESULTS
         </span>
       </div>
 
       {/* ✅ B13: Combined Total Card — หุ้น + chance card */}
       <div className="bg-[var(--mw-surface)] rounded-lg p-4 text-center mb-3">
-        <div className="text-xs text-gray-500 mb-2">รวมรอบนี้</div>
+        <div className="text-xs text-gray-500 mb-2">This challenge</div>
         <div
           className="text-3xl font-bold"
           style={{ color: isCombinedProfit ? '#22c55e' : '#ef4444' }}
@@ -76,7 +76,7 @@ export default function ResultsPanel({ round, player }: ResultsPanelProps) {
         <div className="mt-3 space-y-1">
           {/* ผลจากหุ้น */}
           <div className="flex items-center justify-between text-sm px-2">
-            <span className="text-gray-400">📈 ผลจากหุ้น</span>
+            <span className="text-gray-400">📈 Portfolio return</span>
             <span style={{ color: isStockProfit ? '#22c55e' : '#ef4444' }}>
               {isStockProfit ? '+' : '-'}฿{Math.abs(total_return).toLocaleString()}
             </span>

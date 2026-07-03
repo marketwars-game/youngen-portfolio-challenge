@@ -1,7 +1,7 @@
 // FILE: app/display/[roomId]/page.tsx — Display screen (shell)
-// VERSION: YG-V4 — render new 'reveal' phase (RevealDisplay); timers auto-gone via empty PHASE_TIMERS
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen | YG-V4 reveal phase branch
+// VERSION: YG-V6 — pass roomId/joinUrl to YearIntroDisplay (rejoin QR); remove dead final_awards branch
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen | YG-V4 reveal phase | YG-V6 YearIntro rejoin QR props + final_awards cleanup
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -242,14 +242,14 @@ export default function DisplayScreen() {
   let content;
   if (phase === 'lobby') {
     content = <FitStage scale={zoom}><LobbyDisplay players={players} roomId={roomId} joinUrl={joinUrl} /></FitStage>;
-  } else if (phase === 'final' || phase === 'final_podium' || phase === 'final_awards' || phase === 'final_ranking') {
+  } else if (phase === 'final' || phase === 'final_podium' || phase === 'final_ranking') {  // YG-V6: final_awards cut (dead code removed)
     content = (
       <FitStage scale={zoom}>
         <FinalDisplay key={`final-${replayTick}`} players={players} phase={phase as any} animate={finalAnimate} playSfx={playSfx} />
       </FitStage>
     );
   } else if (phase === 'year_intro') {
-    content = <FitStage scale={zoom}><YearIntroDisplay round={round} /></FitStage>;
+    content = <FitStage scale={zoom}><YearIntroDisplay round={round} roomId={roomId} joinUrl={joinUrl} /></FitStage>;
   } else if (phase === 'market_open') {
     content = <FitStage scale={zoom}><MarketOpenDisplay round={round} /></FitStage>;
   } else {

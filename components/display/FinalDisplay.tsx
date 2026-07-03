@@ -1,7 +1,7 @@
 // FILE: components/display/FinalDisplay.tsx — Display Final Phase ROUTER (3 steps)
-// VERSION: YG-V5 — cut Awards step: final → final_podium → final_ranking (FinalAwards now dormant)
+// VERSION: YG-V6 — EN suspense screen (champion reveal); router unchanged (final → final_podium → final_ranking)
 // LAST MODIFIED: 03 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 cut Awards step
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V5 cut Awards step | YG-V6 EN
 'use client';
 
 import type { SfxKey } from '@/lib/sound';
@@ -20,17 +20,17 @@ interface FinalDisplayProps {
 // === Step ① suspense — "ใครคือแชมป์?" ค้างไว้ รอ MC กดเฉลย ===
 function FinalSuspense() {
   return (
-    <div className="relative h-screen flex flex-col items-center justify-center px-8 overflow-hidden">
+    <div className="relative h-full flex flex-col items-center justify-center px-8 overflow-hidden">
       <style>{`
         @keyframes mwPulse { 0%,100%{ transform:scale(1); opacity:.9 } 50%{ transform:scale(1.06); opacity:1 } }
         @keyframes mwBlink { 0%,100%{ opacity:.25 } 50%{ opacity:1 } }
       `}</style>
       <h1 className="text-7xl font-black" style={{ animation: 'mwPulse 0.8s ease-in-out infinite', background: 'linear-gradient(90deg,#fff,var(--mw-violet))', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
-        ใครคือแชมป์?
+        WHO&apos;S THE CHAMPION?
       </h1>
-      <p className="text-3xl mt-5" style={{ color: 'rgba(255,255,255,0.78)' }}>Who's the champion of Market Wars?</p>
+      <p className="text-3xl mt-5" style={{ color: 'rgba(255,255,255,0.78)' }}>The final results are in.</p>
       <p className="text-xl mt-10" style={{ color: 'rgba(255,255,255,0.65)' }}>
-        รอ MC เฉลย
+        Waiting for the reveal
         <span style={{ animation: 'mwBlink 1.2s infinite' }}> ●</span>
         <span style={{ animation: 'mwBlink 1.2s infinite', animationDelay: '0.2s' }}>●</span>
         <span style={{ animation: 'mwBlink 1.2s infinite', animationDelay: '0.4s' }}>●</span>

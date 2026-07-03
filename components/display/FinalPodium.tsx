@@ -1,7 +1,7 @@
 // FILE: components/display/FinalPodium.tsx — Final step ① Podium reveal (3→2→1)
 // VERSION: YG-V5 — drop Smart Diversifier award pill (no awards in YG final); champion reveal = money/rank only
 // LAST MODIFIED: 03 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 drop award pill
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V6 h-full fit | YG-V5 drop award pill
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -88,7 +88,7 @@ export default function FinalPodium({ players, animate, playSfx }: FinalPodiumPr
   };
 
   return (
-    <div className="relative h-screen flex flex-col items-center justify-center px-8 overflow-hidden">
+    <div className="relative h-full flex flex-col items-center justify-center px-8 overflow-hidden">
       <style>{`
         @keyframes mwRise { from { opacity:0; transform:translateY(60px) } to { opacity:1; transform:translateY(0) } }
         @keyframes mwGrow { from { transform:scaleY(0) } to { transform:scaleY(1) } }

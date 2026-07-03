@@ -1,7 +1,7 @@
 // FILE: components/display/SoundGate.tsx — full-screen "tap to enable sound" gate
-// VERSION: YG-V1 — NextGen Royal re-theme (brand tokens; kids-camp neon retired)
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme
+// VERSION: YG-V6 — EN sweep (drop bilingual TH; EN-only gate)
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V6 EN
 'use client';
 
 export default function SoundGate({ onUnlock }: { onUnlock: () => void }) {
@@ -13,14 +13,14 @@ export default function SoundGate({ onUnlock }: { onUnlock: () => void }) {
     >
       <div style={{ fontSize: '64px' }}>🔊</div>
       <div className="text-3xl font-bold text-white text-center px-6">
-        เปิดเสียงเพื่อเริ่ม <span style={{ color: 'rgba(255,255,255,0.55)' }}>·</span> Enable sound
+        Enable sound to begin
       </div>
       <button
         onClick={onUnlock}
         className="animate-pulse text-xl font-semibold px-8 py-4 rounded-full"
         style={{ background: 'rgba(var(--mw-violet-rgb),0.12)', border: '1.5px solid var(--mw-violet)', color: 'var(--mw-violet)' }}
       >
-        👆 แตะเพื่อเปิดเสียง · Tap for sound
+        👆 Tap for sound
       </button>
       <div className="text-base" style={{ color: 'rgba(255,255,255,0.5)' }}>
         Enable this before teams join

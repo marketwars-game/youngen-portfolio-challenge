@@ -1,10 +1,10 @@
 # YoungGen Portfolio Challenge — File Registry
 
 **Location:** วางที่ root ของ repo (`/FILE_REGISTRY.md`) — version control โดย git
-**Last Updated:** YG-V5 (final rework — cut Awards step, real-teams-only ranking, mobile spoiler guard) — 03 Jul 2026
+**Last Updated:** YG-V6 (4–8 team display layout + full EN sweep + rejoin QR + End&NewRoom) — 03 Jul 2026
 **Repo:** https://github.com/marketwars-game/youngen-portfolio-challenge
 **Default branch:** `main`
-**Latest tag:** `YG-V5`
+**Latest tag:** `YG-V6`
 **Forked from:** `market-wars @ B20-stable` (Dime! Kids Camp) — แชร์ engine/DB/routes, แตกต่างที่ content / phase flow / asset config
 
 ---
@@ -176,7 +176,7 @@ https://raw.githubusercontent.com/marketwars-game/youngen-portfolio-challenge/ma
 
 | ไฟล์ | หน้าที่ |
 |------|--------|
-| `docs/YoungGen_TechSpec_v4.md` | Tech Spec (สเปกหลัก — current) |
+| `docs/YoungGen_TechSpec_v6.md` | Tech Spec (สเปกหลัก — current) |
 | `docs/README_YG_V0.md` | คู่มือรัน demo + deploy |
 | `docs/schema.sql` | Supabase schema (สำหรับ project แยกตอน deploy จริง) |
 

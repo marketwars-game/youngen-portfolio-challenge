@@ -1,7 +1,7 @@
 // FILE: components/display/MarketOpenDisplay.tsx — Display market-open splash
-// VERSION: YG-V2 — fit-to-screen (rendered inside FitStage 1280×720); retire CSS zoom
-// LAST MODIFIED: 02 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen
+// VERSION: YG-V6 — EN sweep (market-open splash) + YEAR→CHALLENGE wording
+// LAST MODIFIED: 03 Jul 2026
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V2 fit-to-screen | YG-V6 EN + challenge wording
 'use client';
 
 import { TOTAL_ROUNDS } from '@/lib/constants';
@@ -29,11 +29,11 @@ export default function MarketOpenDisplay({ round }: { round: number }) {
       </svg>
 
       <div className="text-center z-10">
-        <p className="mo-anim text-lg tracking-[4px] mb-5 font-semibold" style={{ color: 'var(--mw-rose)', animationDelay: '0.1s' }}>YEAR {round} OF {TOTAL_ROUNDS}</p>
+        <p className="mo-anim text-lg tracking-[4px] mb-5 font-semibold" style={{ color: 'var(--mw-rose)', animationDelay: '0.1s' }}>CHALLENGE {round} OF {TOTAL_ROUNDS}</p>
         <p className="mo-pop mb-5" style={{ fontSize: '9rem', lineHeight: 1, animationDelay: '0.3s' }}>📈</p>
-        <p className="mo-anim text-5xl font-black mb-3" style={{ color: '#FFD700', animationDelay: '0.5s' }}>ตลาดปีที่ {round} กำลังเปิด!</p>
-        <p className="mo-anim text-2xl font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.9)', animationDelay: '0.7s' }}>เตรียมรับมือกับสิ่งที่จะเกิดขึ้น...</p>
-        <p className="mo-anim text-xl" style={{ color: 'rgba(255,255,255,0.65)', animationDelay: '0.85s' }}>มาดูกันว่าปีนี้เกิดอะไรขึ้น...</p>
+        <p className="mo-anim text-5xl font-black mb-3" style={{ color: '#FFD700', animationDelay: '0.5s' }}>MARKET OPEN!</p>
+        <p className="mo-anim text-2xl font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.9)', animationDelay: '0.7s' }}>Brace for what&apos;s coming…</p>
+        <p className="mo-anim text-xl" style={{ color: 'rgba(255,255,255,0.65)', animationDelay: '0.85s' }}>Let&apos;s see how the market moves…</p>
       </div>
     </div>
   );

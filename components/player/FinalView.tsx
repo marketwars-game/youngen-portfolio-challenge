@@ -1,7 +1,7 @@
 // FILE: components/player/FinalView.tsx — Player Final Phase
-// VERSION: YG-V5 — spoiler guard (hold on final/final_podium, recap at final_ranking) + drop Smart Diversifier badge + drop dormant quiz/chance stats
+// VERSION: YG-V6 — EN sweep (return-by-challenge labels); spoiler guard/recap unchanged
 // LAST MODIFIED: 03 Jul 2026
-// HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V1 re-theme | YG-V5 spoiler guard + drop award + stats
+// HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V5 spoiler guard | YG-V6 EN
 
 import { STARTING_MONEY, TOTAL_ROUNDS } from '@/lib/constants';
 import { compareForRank } from '@/lib/ranking';
@@ -84,7 +84,7 @@ export default function FinalView({ player, players, phase }: FinalViewProps) {
 
       {/* Round-by-round bars — ✅ B13: R → ปี */}
       <div className="bg-[var(--mw-surface)] rounded-lg p-3 mb-4">
-        <div className="text-xs tracking-widest text-gray-500 mb-2">ผลตอบแทนรายปี</div>
+        <div className="text-xs tracking-widest text-gray-500 mb-2">RETURN BY CHALLENGE</div>
         <div className="flex items-end justify-around gap-1" style={{ height: '80px' }}>
           {roundBars.map((bar) => {
             const heightPct = Math.abs(bar.pct) / maxAbsPct;
@@ -99,7 +99,7 @@ export default function FinalView({ player, players, phase }: FinalViewProps) {
                   className="w-6 rounded-t"
                   style={{ height: `${h}px`, backgroundColor: color, opacity: 0.8 }}
                 />
-                <span className="text-xs text-gray-600 mt-1">ปี{bar.round}</span>
+                <span className="text-xs text-gray-600 mt-1">Ch {bar.round}</span>
               </div>
             );
           })}
