@@ -1,5 +1,5 @@
 // FILE: lib/constants.ts — Game Configuration (Single Source of Truth)
-// VERSION: YG-V4 — timers removed (PHASE_TIMERS emptied) + new 'reveal' phase (masked submit → MC reveal)
+// VERSION: YG-V6 — asset palette fix (projector): bonds #38BDF8→#3B82F6(blue) · global_eq #22D3EE→#2DD4BF(teal) · crypto #F59E0B→#EC4899(pink)
 //   • 6 Thai sectors → 8 asset classes (EN) · RETURN_TABLE 6x6 → 8x7
 //   • STARTING_MONEY 10,000 → 1,000,000 · TOTAL_ROUNDS 6 → 7
 //   • NEW: AVAILABLE_ASSETS (progressive unlock) + per-asset cap mechanism (generic; no asset capped as of YG-V3)
@@ -43,7 +43,7 @@ export const COMPANIES = [
     name: 'Thai Government Bonds',
     type: 'Fixed Income',
     risk: 'Low',
-    color: '#38BDF8',
+    color: '#3B82F6',
     icon: '🏦',
     description: '5-year Thai gov bond; price moves inversely to interest rates.',
   },
@@ -61,7 +61,7 @@ export const COMPANIES = [
     name: 'Global Equity',
     type: 'Equity',
     risk: 'Medium-High',
-    color: '#22D3EE',
+    color: '#2DD4BF',
     icon: '🌐',
     description: 'MSCI World / S&P 500 proxy — US & developed-market large-caps.',
   },
@@ -98,7 +98,7 @@ export const COMPANIES = [
     name: 'Digital Assets / Crypto',
     type: 'Digital Asset',
     risk: 'Very High',
-    color: '#F59E0B',
+    color: '#EC4899',
     icon: '🪙',
     description: 'Bitcoin + Ether basket. Extreme volatility. (Unlocks Challenge 6)',
     unlockRound: 6,
@@ -382,4 +382,13 @@ export const QUIZ_PER_ROUND: Record<number, number[]> = { 1: [1] };
 
 export function getQuizForRound(_roomId: string, _round: number): typeof QUIZ_POOL[number][] {
   return [];
+}
+
+// YG-V6: readable text color for a % label sitting on top of an asset-color segment
+// (dark text on light colors like gold/teal, white text on dark colors like blue/purple)
+export function assetTextColor(hex: string): string {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.6 ? 'rgba(0,0,0,0.75)' : 'rgba(255,255,255,0.95)';
 }

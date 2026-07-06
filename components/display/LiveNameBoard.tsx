@@ -1,11 +1,11 @@
 // FILE: components/display/LiveNameBoard.tsx — Spectator wall (invest submit / reveal allocations)
-// VERSION: YG-V6 — 4–8 team layout: big rows (invest ✓/waiting · reveal allocation bar + 🎯/🧺 tag + legend); drop tier/PAGE_SIZE/paginate; EN
+// VERSION: YG-V6 — 4–8 team rows (invest ✓/waiting · reveal allocation bar + per-asset % labels + 🎯/🧺 + legend); drop tier/paginate; EN
 // LAST MODIFIED: 03 Jul 2026
 // HISTORY: B16b (grid wall for ~70 players) | YG-V4 mask invest + reveal variant + EN | YG-V6 rework for few teams (rows + big allocation bars)
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { COMPANIES, getAvailableAssets } from '@/lib/constants';
+import { COMPANIES, getAvailableAssets, assetTextColor } from '@/lib/constants';
 
 interface LiveNameBoardProps {
   players: any[];
@@ -130,7 +130,9 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
                   <div className="rounded-lg overflow-hidden flex" style={{ flex: 1, height: Math.round(rowH * 0.42), background: 'rgba(255,255,255,0.06)' }}>
                     {submitted && segs.map((s, i) => (
-                      <div key={i} style={{ width: `${s.pct}%`, backgroundColor: s.color }} />
+                      <div key={i} style={{ width: `${s.pct}%`, backgroundColor: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                        {s.pct >= 5 && <span style={{ fontSize: Math.max(11, Math.round(rowH * 0.17)), fontWeight: 700, color: assetTextColor(s.color), lineHeight: 1, whiteSpace: 'nowrap' }}>{s.pct}%</span>}
+                      </div>
                     ))}
                   </div>
                   {submitted && concentrated && <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#fbbf24', background: 'rgba(245,158,11,0.16)' }}>🎯 Concentrated</span>}

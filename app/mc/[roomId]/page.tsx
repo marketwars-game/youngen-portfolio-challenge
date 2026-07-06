@@ -1,5 +1,5 @@
 // FILE: app/mc/[roomId]/page.tsx — MC Control screen
-// VERSION: YG-V6 — add "End & New Room" (next-group) button on final; final stepper unchanged (① Podium → ② Ranking)
+// VERSION: YG-V6 — End & New Room button (final) + per-asset % on invest mini-bar; final stepper unchanged
 // LAST MODIFIED: 03 Jul 2026
 // HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V4 reveal button | YG-V5 cut Awards step | YG-V6 End & New Room
 'use client';
@@ -19,6 +19,7 @@ import {
   RETURN_TABLE,
   STARTING_MONEY,
   YEAR_INTRO_TEXT,
+  assetTextColor,
 } from '@/lib/constants';
 import { getNextPhase, getStepGroupProgress } from '@/lib/game-engine';
 import ResearchMC from '@/components/mc/ResearchMC';
@@ -308,9 +309,11 @@ export default function MCControlRoom() {
                     <span className="text-xs w-20 truncate" style={{ color: p.submitted ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.4)' }}>{p.name}</span>
                     {/* Mini portfolio bar */}
                     {p.submitted && p.invested.length > 0 ? (
-                      <div className="flex-1 h-3 rounded-full overflow-hidden flex" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                      <div className="flex-1 h-4 rounded-full overflow-hidden flex" style={{ background: 'rgba(255,255,255,0.06)' }}>
                         {p.invested.map((inv) => (
-                          <div key={inv.id} style={{ width: `${inv.pct}%`, backgroundColor: inv.color }} title={`${inv.id} ${inv.pct}%`} />
+                          <div key={inv.id} style={{ width: `${inv.pct}%`, backgroundColor: inv.color, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }} title={`${inv.id} ${inv.pct}%`}>
+                            {inv.pct >= 15 && <span style={{ fontSize: 8, fontWeight: 700, color: assetTextColor(inv.color), lineHeight: 1, whiteSpace: 'nowrap' }}>{inv.pct}%</span>}
+                          </div>
                         ))}
                       </div>
                     ) : p.submitted ? (
