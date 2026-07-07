@@ -1,6 +1,6 @@
 // FILE: components/display/LiveNameBoard.tsx — Spectator wall (invest submit / reveal allocations)
 // VERSION: YG-V6 — 4–8 team rows (invest ✓/waiting · reveal allocation bar + per-asset % labels + 🎯/🧺 + legend); drop tier/paginate; EN
-// LAST MODIFIED: 03 Jul 2026
+// LAST MODIFIED: 07 Jul 2026
 // HISTORY: B16b (grid wall for ~70 players) | YG-V4 mask invest + reveal variant + EN | YG-V6 rework for few teams (rows + big allocation bars)
 'use client';
 

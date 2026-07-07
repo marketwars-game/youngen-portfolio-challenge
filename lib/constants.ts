@@ -1,10 +1,10 @@
 // FILE: lib/constants.ts — Game Configuration (Single Source of Truth)
-// VERSION: YG-V6 — asset palette fix (projector): bonds #38BDF8→#3B82F6(blue) · global_eq #22D3EE→#2DD4BF(teal) · crypto #F59E0B→#EC4899(pink)
+// VERSION: YG-V6 — asset palette v3 (projector high-contrast): bonds→#1D4ED8(dark blue) · global_eq→#22C55E(green) · oil→#991B1B(dark red) · crypto→#DB2777(magenta); split by hue+lightness
 //   • 6 Thai sectors → 8 asset classes (EN) · RETURN_TABLE 6x6 → 8x7
 //   • STARTING_MONEY 10,000 → 1,000,000 · TOTAL_ROUNDS 6 → 7
 //   • NEW: AVAILABLE_ASSETS (progressive unlock) + per-asset cap mechanism (generic; no asset capped as of YG-V3)
 //   • Quiz/Chance/Golden constants kept (imported by dormant components) but their phases are removed in game-engine
-// LAST MODIFIED: 02 Jul 2026
+// LAST MODIFIED: 07 Jul 2026
 // HISTORY: market-wars B1..B20 (see main repo) | YG-V0 fork: asset classes + scripted 8x7 returns + 1M capital + 7 challenges + unlock/cap | YG-V3: allocation step 5% + crypto cap removed | YG-V4: timers removed + reveal phase
 
 // ==============================================
@@ -43,7 +43,7 @@ export const COMPANIES = [
     name: 'Thai Government Bonds',
     type: 'Fixed Income',
     risk: 'Low',
-    color: '#3B82F6',
+    color: '#1D4ED8',
     icon: '🏦',
     description: '5-year Thai gov bond; price moves inversely to interest rates.',
   },
@@ -61,7 +61,7 @@ export const COMPANIES = [
     name: 'Global Equity',
     type: 'Equity',
     risk: 'Medium-High',
-    color: '#2DD4BF',
+    color: '#22C55E',
     icon: '🌐',
     description: 'MSCI World / S&P 500 proxy — US & developed-market large-caps.',
   },
@@ -88,7 +88,7 @@ export const COMPANIES = [
     name: 'Crude Oil',
     type: 'Commodity',
     risk: 'High',
-    color: '#EF4444',
+    color: '#991B1B',
     icon: '🛢️',
     description: 'Brent crude proxy — tracks energy supply/demand. (Unlocks Challenge 5)',
     unlockRound: 5,
@@ -98,7 +98,7 @@ export const COMPANIES = [
     name: 'Digital Assets / Crypto',
     type: 'Digital Asset',
     risk: 'Very High',
-    color: '#EC4899',
+    color: '#DB2777',
     icon: '🪙',
     description: 'Bitcoin + Ether basket. Extreme volatility. (Unlocks Challenge 6)',
     unlockRound: 6,

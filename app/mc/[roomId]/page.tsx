@@ -1,6 +1,6 @@
 // FILE: app/mc/[roomId]/page.tsx — MC Control screen
 // VERSION: YG-V6 — End & New Room button (final) + per-asset % on invest mini-bar; final stepper unchanged
-// LAST MODIFIED: 03 Jul 2026
+// LAST MODIFIED: 07 Jul 2026
 // HISTORY: B1..B20 (kids-camp lineage) | YG-V0 fork | YG-V1 re-theme | YG-V4 reveal button | YG-V5 cut Awards step | YG-V6 End & New Room
 'use client';
 
