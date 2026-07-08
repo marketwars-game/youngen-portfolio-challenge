@@ -1,6 +1,6 @@
 // FILE: components/display/LiveNameBoard.tsx — Spectator wall (invest submit / reveal allocations)
-// VERSION: YG-V6 — 4–8 team rows (invest ✓/waiting · reveal allocation bar + per-asset % labels + 🎯/🧺 + legend); drop tier/paginate; EN
-// LAST MODIFIED: 07 Jul 2026
+// VERSION: YG-V6.3 — 4–8 team rows (invest ✓/waiting · reveal allocation bar + per-asset % labels + legend); strategy tags removed (diversification now enforced); drop tier/paginate; EN
+// LAST MODIFIED: 08 Jul 2026
 // HISTORY: B16b (grid wall for ~70 players) | YG-V4 mask invest + reveal variant + EN | YG-V6 rework for few teams (rows + big allocation bars)
 'use client';
 
@@ -23,10 +23,6 @@ function isSubmitted(p: any, round: number, variant: 'invest' | 'reveal' | 'chan
   return variant === 'chance'
     ? (p.duel_submitted_round || 0) >= round
     : p.portfolio_submitted_round === round;
-}
-
-function assetCount(portfolio: any) {
-  return COMPANIES.reduce((n, c) => n + ((parseFloat(portfolio?.[c.id]) || 0) > 0 ? 1 : 0), 0);
 }
 
 export default function LiveNameBoard({ players, round, variant }: LiveNameBoardProps) {
@@ -92,9 +88,6 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
           const submitted = isSubmitted(p, round, variant);
           const just = justIds.has(p.id);
           const portfolio = p.portfolio || {};
-          const na = assetCount(portfolio);
-          const concentrated = na > 0 && na <= 2;
-          const diversified = na >= 4;
 
           const segs = COMPANIES
             .map((c) => ({ color: c.color, pct: parseFloat(portfolio[c.id]) || 0 }))
@@ -135,8 +128,6 @@ export default function LiveNameBoard({ players, round, variant }: LiveNameBoard
                       </div>
                     ))}
                   </div>
-                  {submitted && concentrated && <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#fbbf24', background: 'rgba(245,158,11,0.16)' }}>🎯 Concentrated</span>}
-                  {submitted && diversified && <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#4ade80', background: 'rgba(34,197,94,0.14)' }}>🧺 Diversified</span>}
                   {!submitted && <span style={{ flexShrink: 0, fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>not submitted</span>}
                 </div>
               )}

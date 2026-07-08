@@ -1,47 +1,21 @@
 // FILE: components/display/FinalRanking.tsx — Final step ② Full ranking (real teams only)
-// VERSION: YG-V6 — 4–8 team rows + money bar + medals + 🎯/🧺 + return% + money; h-full (fit FitStage 720, was h-screen→overflow on >720 viewport); EN
-// LAST MODIFIED: 03 Jul 2026
+// VERSION: YG-V6.3 — 4–8 team rows + money bar + medals + return% + money; strategy tags removed (diversification now enforced); h-full fit; EN
+// LAST MODIFIED: 08 Jul 2026
 // HISTORY: B1..B20 (kids-camp lineage: scale-to-fit grid for ~70) | YG-V0 fork | YG-V5 real-teams-only | YG-V6 EN + rows rework for few teams
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { compareForRank } from '@/lib/ranking';
-import { STARTING_MONEY, COMPANIES } from '@/lib/constants';
+import { STARTING_MONEY } from '@/lib/constants';
 
 interface FinalRankingProps {
   players: any[];
   animate: boolean;
 }
 
-type Strat = 'allin' | 'div' | 'mix';
-
-// เกณฑ์จำแนกกลยุทธ์ (mirror lib/awards.ts roundIsDiversified + เพิ่ม all-in)
-const ALLIN_SINGLE_PCT = 90;   // ทุ่ม ≥90% กลุ่มเดียว = กระจุก/all-in รอบนั้น
-const DIV_MIN_SECTORS = 3;
-const DIV_MAX_SINGLE_PCT = 70;
-
 const fmtPct = (v: number) => (v >= 0 ? '+' : '') + Math.round(v) + '%';
 const retOf = (p: any) => ((parseFloat(p.money) || 0) - STARTING_MONEY) / STARTING_MONEY * 100;
 
-function classifyStrategy(player: any): Strat {
-  const rr = player?.round_returns || {};
-  let played = 0, conc = 0, divr = 0;
-  for (const key of Object.keys(rr)) {
-    const pf = rr[key]?.portfolio_used;
-    if (!pf) continue;
-    const vals = (COMPANIES as any[]).map((c) => parseFloat(pf[c.id]) || 0);
-    const maxAlloc = Math.max(...vals, 0);
-    if (maxAlloc <= 0) continue; // ไม่ได้ลงทุนรอบนี้
-    played++;
-    const sectorCount = vals.filter((v) => v > 0).length;
-    if (maxAlloc >= ALLIN_SINGLE_PCT) conc++;
-    if (sectorCount >= DIV_MIN_SECTORS && maxAlloc <= DIV_MAX_SINGLE_PCT) divr++;
-  }
-  if (played === 0) return 'mix';
-  if (conc * 2 > played) return 'allin';
-  if (divr * 2 > played) return 'div';
-  return 'mix';
-}
 
 const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
 const medalGlow = ['rgba(255,215,0,0.35)', 'rgba(192,192,192,0.3)', 'rgba(205,127,50,0.3)'];
@@ -72,12 +46,10 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
     const maxRet = n ? Math.max(...rets) : 0;
     const minRet = n ? Math.min(...rets) : 0;
     const maxMoney = Math.max(1, ...sortedPlayers.map((p) => parseFloat(p.money) || 0));
-    const stratOf: Record<string, Strat> = {};
-    sortedPlayers.forEach((p) => { stratOf[p.id] = classifyStrategy(p); });
-    return { sortedPlayers, n, greenCount, redCount, avg, maxRet, minRet, maxMoney, stratOf };
+    return { sortedPlayers, n, greenCount, redCount, avg, maxRet, minRet, maxMoney };
   }, [players]);
 
-  const { sortedPlayers, n, greenCount, redCount, avg, maxRet, minRet, maxMoney, stratOf } = view;
+  const { sortedPlayers, n, greenCount, redCount, avg, maxRet, minRet, maxMoney } = view;
 
   const N = Math.max(1, n);
   const gap = Math.max(8, Math.min(16, (areaH / N) * 0.14));
@@ -86,11 +58,6 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
   const moneyF = Math.round(nameF * 0.92);
   const waveTotal = 1100;
 
-  const stChip = (s: Strat) => {
-    if (s === 'allin') return { icon: '🎯', label: 'Concentrated', color: '#fbbf24', bg: 'rgba(245,158,11,0.16)' };
-    if (s === 'div') return { icon: '🧺', label: 'Diversified', color: '#4ade80', bg: 'rgba(34,197,94,0.14)' };
-    return null;
-  };
 
   return (
     <div className="relative h-full flex flex-col px-6 pt-10 pb-6 overflow-hidden">
@@ -115,7 +82,6 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
           const profit = money >= STARTING_MONEY;
           const top3 = i < 3;
           const col = top3 ? rankColors[i] : '#fff';
-          const chip = stChip(stratOf[p.id]);
           const fillPct = (money / maxMoney) * 100;
           const fillBg = top3
             ? `linear-gradient(90deg, ${rankColors[i]}33, rgba(var(--mw-rose-rgb),0.18))`
@@ -142,11 +108,6 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
                 <span style={{ fontSize: nameF, fontWeight: 700, color: col, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: '0 1 auto' }}>
                   {p.name}
                 </span>
-                {chip && (
-                  <span style={{ flexShrink: 0, fontSize: Math.round(nameF * 0.5), fontWeight: 700, padding: '3px 10px', borderRadius: 999, color: chip.color, background: chip.bg }}>
-                    {chip.icon} {chip.label}
-                  </span>
-                )}
                 <span style={{ marginLeft: 'auto', flexShrink: 0, fontSize: Math.round(nameF * 0.62), fontWeight: 700, color: profit ? '#22c55e' : '#ef4444', letterSpacing: 0.3 }}>
                   {profit ? '▲' : '▼'} {fmtPct(retOf(p))}
                 </span>
@@ -159,10 +120,6 @@ export default function FinalRanking({ players, animate }: FinalRankingProps) {
         })}
       </div>
 
-      {/* legend */}
-      <div className="mt-3 text-center flex-shrink-0" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>
-        🎯 Concentrated · 🧺 Diversified
-      </div>
     </div>
   );
 }

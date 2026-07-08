@@ -1,10 +1,10 @@
 // FILE: lib/constants.ts — Game Configuration (Single Source of Truth)
-// VERSION: YG-V6 — asset palette v3 (projector high-contrast): bonds→#1D4ED8(dark blue) · global_eq→#22C55E(green) · oil→#991B1B(dark red) · crypto→#DB2777(magenta); split by hue+lightness
+// VERSION: YG-V6.3 — palette v3 (dark blue/green/dark red/magenta, projector high-contrast) + assetTextColor() (% labels) + diversification consts (Ch5–7: MIN_ASSET_CLASSES=3, MAX_ALLOCATION_PER_ASSET=50)
 //   • 6 Thai sectors → 8 asset classes (EN) · RETURN_TABLE 6x6 → 8x7
 //   • STARTING_MONEY 10,000 → 1,000,000 · TOTAL_ROUNDS 6 → 7
 //   • NEW: AVAILABLE_ASSETS (progressive unlock) + per-asset cap mechanism (generic; no asset capped as of YG-V3)
 //   • Quiz/Chance/Golden constants kept (imported by dormant components) but their phases are removed in game-engine
-// LAST MODIFIED: 07 Jul 2026
+// LAST MODIFIED: 08 Jul 2026
 // HISTORY: market-wars B1..B20 (see main repo) | YG-V0 fork: asset classes + scripted 8x7 returns + 1M capital + 7 challenges + unlock/cap | YG-V3: allocation step 5% + crypto cap removed | YG-V4: timers removed + reveal phase
 
 // ==============================================
@@ -21,6 +21,11 @@ export const MAX_PLAYERS = 60;              // teams (1 device = 1 team)
 export const TOTAL_ROUNDS = 7;              // 7 challenges
 export const STARTING_MONEY = 1000000;      // ฿1,000,000 virtual capital
 export const ALLOCATION_STEP = 5;           // 5% steps (YG-V3 — team decision; brief spec 1% deferred)
+
+// YG-V6: diversification rules (team requested, applies Challenge 5–7 only; 1–4 kept as-played)
+export const DIVERSIFY_FROM_ROUND = 5;      // rules active when round >= this
+export const MAX_ALLOCATION_PER_ASSET = 50; // no single asset class over 50%
+export const MIN_ASSET_CLASSES = 3;         // must spread across at least 3 asset classes
 
 // ==============================================
 // 8 Asset Classes (exported as COMPANIES to reuse the existing engine/routes unchanged)

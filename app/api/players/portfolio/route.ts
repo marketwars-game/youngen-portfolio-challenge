@@ -1,10 +1,10 @@
 // FILE: app/api/players/portfolio/route.ts — Save team allocation (PATCH)
-// VERSION: YG-V3 — allocation step validation now derives from ALLOCATION_STEP (was hardcoded % 10 → rejected 5% steps)
-// LAST MODIFIED: 02 Jul 2026
+// VERSION: YG-V6.3 — + diversification rules server-side (Challenge 5–7): max 50%/asset + min 3 asset classes
+// LAST MODIFIED: 08 Jul 2026
 // HISTORY: market-wars B1..B20 (kids-camp lineage — see market-wars repo) | YG-V0 fork | YG-V3 step-validation fix
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { ALLOCATION_STEP } from '@/lib/constants';
+import { ALLOCATION_STEP, DIVERSIFY_FROM_ROUND, MAX_ALLOCATION_PER_ASSET, MIN_ASSET_CLASSES } from '@/lib/constants';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -80,6 +80,23 @@ export async function PATCH(request: NextRequest) {
         { error: `Cannot update portfolio during ${room.current_phase} phase` },
         { status: 400 }
       );
+    }
+
+    // YG-V6: diversification rules — enforced Challenge 5–7 only (1–4 unchanged)
+    if (room.current_round >= DIVERSIFY_FROM_ROUND) {
+      if (values.some((v) => v > MAX_ALLOCATION_PER_ASSET)) {
+        return NextResponse.json(
+          { error: `No asset class may exceed ${MAX_ALLOCATION_PER_ASSET}%` },
+          { status: 400 }
+        );
+      }
+      const used = values.filter((v) => v > 0).length;
+      if (used < MIN_ASSET_CLASSES) {
+        return NextResponse.json(
+          { error: `Use at least ${MIN_ASSET_CLASSES} asset classes` },
+          { status: 400 }
+        );
+      }
     }
 
     // --- Update portfolio + mark which round it was submitted ---

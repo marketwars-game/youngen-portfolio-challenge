@@ -1,5 +1,6 @@
 // FILE: components/player/InvestmentPanel.tsx — Team allocation UI (asset classes)
-// VERSION: YG-V3 — crypto 20% cap removed (cap machinery retained, generic; none capped) + submit is FINAL (Edit button removed)
+// VERSION: YG-V6.3 — diversification rules (Challenge 5–7): max 50%/asset (cap machinery) + min 3 asset classes to submit; 1–4 unchanged
+// LAST MODIFIED: 08 Jul 2026
 //   • Renders the asset classes available THIS challenge (getAvailableAssets(round)) — progressive unlock
 //   • Per-asset cap clamp (generic via getAssetCap; renders + clamps only when an asset defines a cap — none as of YG-V3)
 //   • Weights must total EXACTLY 100% before submit (no leftover-cash; Cash is its own asset)
@@ -10,7 +11,7 @@
 'use client';
 
 import { useState } from 'react';
-import { getAvailableAssets, getAssetCap, ALLOCATION_STEP } from '@/lib/constants';
+import { getAvailableAssets, getAssetCap, ALLOCATION_STEP, DIVERSIFY_FROM_ROUND, MAX_ALLOCATION_PER_ASSET, MIN_ASSET_CLASSES } from '@/lib/constants';
 
 // ========== Types ==========
 
@@ -103,11 +104,19 @@ export default function InvestmentPanel({
   const remaining = 100 - total;
   const isComplete = total === 100;
 
+  // YG-V6: diversification rules — active Challenge 5–7 only
+  const diversifyRules = round >= DIVERSIFY_FROM_ROUND;
+  const perAssetCap = diversifyRules ? MAX_ALLOCATION_PER_ASSET : 100;
+  const assetsUsed = Object.values(allocations).filter((v) => v > 0).length;
+  const minClasses = diversifyRules ? MIN_ASSET_CLASSES : 1;
+  const meetsMin = assetsUsed >= minClasses;
+  const canSubmit = isComplete && meetsMin;
+
   // Adjust allocation for an asset — respects per-asset cap and the 100% ceiling
   const adjust = (id: string, delta: number) => {
     if (submitted) return;
     const current = allocations[id] || 0;
-    const cap = getAssetCap(id) ?? 100;
+    const cap = getAssetCap(id) ?? perAssetCap;
     let newVal = Math.max(0, Math.min(cap, current + delta));
     const newTotal = total - current + newVal;
     if (newTotal > 100) {
@@ -117,7 +126,7 @@ export default function InvestmentPanel({
   };
 
   const handleSubmit = async () => {
-    if (!isComplete) return;
+    if (!canSubmit) return;
     setSubmitting(true);
     setError('');
     try {
@@ -212,7 +221,7 @@ export default function InvestmentPanel({
         </span>
         <h2 className="text-lg font-bold text-white mt-2">Allocate Your Portfolio</h2>
         <p className="text-xs mt-1" style={{ color: '#ffffff50' }}>
-          Weights must total exactly 100%
+          Weights must total exactly 100%{diversifyRules ? ' · max 50% each · min 3 classes' : ''}
         </p>
       </div>
 
@@ -243,7 +252,7 @@ export default function InvestmentPanel({
       {/* Asset cards */}
       <div className="space-y-2 flex-1 overflow-y-auto pb-2" style={{ maxHeight: 'calc(100vh - 340px)' }}>
         {assets.map((c) => {
-          const cap = getAssetCap(c.id);
+          const cap = diversifyRules ? (getAssetCap(c.id) ?? perAssetCap) : getAssetCap(c.id);
           const atCap = cap !== undefined && allocations[c.id] >= cap;
           return (
             <div
@@ -323,23 +332,25 @@ export default function InvestmentPanel({
         </div>
       )}
 
-      {/* Confirm button — enabled only at exactly 100% */}
+      {/* Confirm button — enabled only at exactly 100% AND (Ch5–7) at least 3 asset classes */}
       <button
         onClick={handleSubmit}
-        disabled={submitting || !isComplete}
+        disabled={submitting || !canSubmit}
         className="w-full py-4 rounded-lg font-bold text-base tracking-wider font-mono mt-2 transition-all duration-300"
         style={{
-          background: isComplete ? 'linear-gradient(135deg, var(--mw-violet), var(--mw-rose))' : '#ffffff10',
-          color: isComplete ? 'var(--mw-base)' : '#ffffff30',
-          boxShadow: isComplete ? '0 0 30px var(--mw-violet)30' : 'none',
+          background: canSubmit ? 'linear-gradient(135deg, var(--mw-violet), var(--mw-rose))' : '#ffffff10',
+          color: canSubmit ? 'var(--mw-base)' : '#ffffff30',
+          boxShadow: canSubmit ? '0 0 30px var(--mw-violet)30' : 'none',
           opacity: submitting ? 0.6 : 1,
         }}
       >
         {submitting
           ? '⏳ SUBMITTING...'
-          : isComplete
-            ? 'CONFIRM PORTFOLIO →'
-            : `Allocate ${remaining}% more`}
+          : !isComplete
+            ? `Allocate ${remaining}% more`
+            : !meetsMin
+              ? `Use at least ${MIN_ASSET_CLASSES} asset classes`
+              : 'CONFIRM PORTFOLIO →'}
       </button>
     </div>
   );
