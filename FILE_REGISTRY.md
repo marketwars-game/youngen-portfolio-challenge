@@ -1,10 +1,18 @@
 # YoungGen Portfolio Challenge — File Registry
 
 **Location:** วางที่ root ของ repo (`/FILE_REGISTRY.md`) — version control โดย git
-**Last Updated:** YG-V6 (4–8 team display layout + full EN sweep + rejoin QR + End&NewRoom) — 03 Jul 2026
+**Last Updated:** YG-V6.3 (diversification Ch5–7 + strategy tags removed) — 08 Jul 2026
 **Repo:** https://github.com/marketwars-game/youngen-portfolio-challenge
 **Default branch:** `main`
-**Latest tag:** `YG-V6`
+**Latest tag:** `YG-V6.3` (diversification Ch5–7) · prev `YG-V6`
+
+**Sub-version map (YG-V6.x):**
+- **v6.0** (03 Jul) — batch แรก: 4–8 team layout · full EN sweep · rejoin QR · End & New Room · bit.ly · FitStage h-full fix · ResultsDisplay diverging
+- **v6.1** (07 Jul) — asset palette high-contrast (dark blue/green/dark red/magenta) + player year_intro money-compound fix
+- **v6.2** (07 Jul) — per-asset % labels (reveal display + MC) + assetTextColor()
+- **v6.3** (08 Jul) — diversification rules Ch5–7 (min 3 classes / max 50%) + strategy tags removed
+
+
 **Forked from:** `market-wars @ B20-stable` (Dime! Kids Camp) — แชร์ engine/DB/routes, แตกต่างที่ content / phase flow / asset config
 
 ---
